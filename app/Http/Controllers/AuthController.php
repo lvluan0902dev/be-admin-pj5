@@ -2,8 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\RegisterRequest;
+use App\User;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
@@ -14,7 +18,7 @@ class AuthController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth:api', ['except' => ['login']]);
+        $this->middleware('auth:api', ['except' => ['login', 'register']]);
     }
 
     /**
@@ -80,5 +84,32 @@ class AuthController extends Controller
             'expires_in' => auth()->factory()->getTTL() * 60,
             'user' => \auth()->user()->name
         ]);
+    }
+
+    public function register(RegisterRequest $request)
+    {
+        $data = $request->all();
+
+//        if (User::query()->where('email', $data['email'])->get()->count() > 0) {
+//            return response()->json(['message' => 'Email already exists']);
+//        } elseif ($data['password'] != $data['confirm_password']) {
+//            return response()->json(['message' => 'Registered failed']);
+//        } else {
+//            $user = User::create([
+//                'name' => $data['name'],
+//                'email' => $data['email'],
+//                'password' => Hash::make($data['password'])
+//            ]);
+//
+//            return response()->json(['message' => 'Registered successfully']);
+//        }
+
+        $user = User::create([
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'password' => Hash::make($data['password'])
+        ]);
+
+        return response()->json(['message' => 'Registered successfully']);
     }
 }
