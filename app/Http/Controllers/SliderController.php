@@ -29,10 +29,10 @@ class SliderController extends Controller
         }
 
         // Sort
-        if (isset($params['sort']) && !empty($params['sort'])) {
-            $sort = $params['sort'];
+        if (isset($params['sort_field']) && !empty($params['sort_field'])) {
+            $sort_field = $params['sort_field'];
         } else {
-            $sort ='created_at';
+            $sort_field ='created_at';
         }
 
         if (isset($params['sort_type']) && !empty($params['sort_type'])) {
@@ -41,7 +41,7 @@ class SliderController extends Controller
             $sort_type = 'DESC';
         }
 
-        $query = $query->orderBy($sort, $sort_type);
+        $query = $query->orderBy($sort_field, $sort_type);
 
         $total_result = $query->count();
 
