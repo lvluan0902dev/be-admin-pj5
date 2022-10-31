@@ -12,5 +12,6 @@ $factory->define(\App\Models\Slider::class, function (Faker $faker) {
         'link' => $faker->text(30),
         'image_name' => $faker->text(30),
         'image_path' => $faker->imageUrl(),
+        'status' => $faker->numberBetween(0, 1)
     ];
 });
