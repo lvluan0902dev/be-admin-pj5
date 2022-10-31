@@ -69,4 +69,9 @@ class SliderController extends Controller
             'last_page' => ceil($total_result / $per_page)
         ]);
     }
+
+    public function add(Request $request) {
+        $data = $request->all();
+        dd($data);
+    }
 }
