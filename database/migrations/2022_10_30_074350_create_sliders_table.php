@@ -20,7 +20,7 @@ class CreateSlidersTable extends Migration
             $table->text('link');
             $table->string('image_name');
             $table->string('image_path');
-            $table->tinyInteger('status')->comment('0: Inactive, 1: active');
+            $table->tinyInteger('status')->comment('0: Inactive, 1: Active');
             $table->timestamps();
         });
     }
