@@ -3,10 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Models\Slider;
+use App\Traits\UploadImageTrait;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class SliderController extends Controller
 {
+    use UploadImageTrait;
+
     private $slider;
 
     public function __construct(Slider $slider)
@@ -72,6 +77,37 @@ class SliderController extends Controller
 
     public function add(Request $request) {
         $data = $request->all();
-        dd($data);
+
+        if ($data['status'] == 'true') {
+            $data['status'] = 1;
+        } else {
+            $data['status'] = 0;
+        }
+
+        DB::beginTransaction();
+        try {
+            $imageUpload = $this->uploadSingleImage($request, 'image', 'slider', 'slider', 3840, 1738);
+            Slider::query()
+                ->create([
+                    'title' => $data['title'],
+                    'content' => $data['content'],
+                    'link' => $data['link'],
+                    'image_name' => $imageUpload['image_name'],
+                    'image_path' => $imageUpload['image_path'],
+                    'status' => $data['status']
+                ]);
+            DB::commit();
+            return response()->json([
+                'success' => 1,
+                'message' => 'Slider added successfully'
+            ]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error($e->getMessage() . '. Line: ' . $e->getLine());
+            return response()->json([
+                'success' => 0,
+                'message' => 'Have something error'
+            ]);
+        }
     }
 }

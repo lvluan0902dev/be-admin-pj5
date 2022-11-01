@@ -18,6 +18,6 @@ Route::group([
 ], function () {
     Route::prefix('slider')->group(function () {
         Route::post('list', 'SliderController@list');
-        Route::post('add', 'SliderController@list');
+        Route::post('add', 'SliderController@add');
     });
 });
