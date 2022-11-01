@@ -141,4 +141,9 @@ trait UploadImageTrait
     {
         return is_dir($path) || mkdir(public_path($path), 0755, true);
     }
+
+    public function deleteImage($imagePath) {
+        unlink(public_path($imagePath));
+        return true;
+    }
 }

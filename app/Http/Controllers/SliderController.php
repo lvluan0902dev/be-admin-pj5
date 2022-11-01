@@ -84,9 +84,10 @@ class SliderController extends Controller
             $data['status'] = 0;
         }
 
+        $imageUpload = $this->uploadSingleImage($request, 'image', 'slider', 'slider', 3840, 1738);
+
         DB::beginTransaction();
         try {
-            $imageUpload = $this->uploadSingleImage($request, 'image', 'slider', 'slider', 3840, 1738);
             Slider::query()
                 ->create([
                     'title' => $data['title'],
@@ -103,10 +104,11 @@ class SliderController extends Controller
             ]);
         } catch (\Exception $e) {
             DB::rollBack();
+            $this->deleteImage($imageUpload['image_path']);
             Log::error($e->getMessage() . '. Line: ' . $e->getLine());
             return response()->json([
                 'success' => 0,
-                'message' => 'Have something error'
+                'message' => $e->getMessage()
             ]);
         }
     }
