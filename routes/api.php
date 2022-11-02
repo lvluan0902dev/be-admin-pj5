@@ -20,5 +20,6 @@ Route::group([
         Route::post('list', 'SliderController@list');
         Route::post('add', 'SliderController@add');
         Route::get('get/{id}', 'SliderController@get');
+        Route::put('edit', 'SliderController@edit');
     });
 });

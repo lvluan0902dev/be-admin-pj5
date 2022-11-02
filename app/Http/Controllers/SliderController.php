@@ -126,4 +126,9 @@ class SliderController extends Controller
             'data' => $slider
         ]);
     }
+
+    public function edit(Request $request) {
+        $data = $request->all();
+        return $this->responseJson($request);
+    }
 }
