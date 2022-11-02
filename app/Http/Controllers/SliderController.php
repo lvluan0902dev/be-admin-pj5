@@ -84,7 +84,7 @@ class SliderController extends Controller
             $data['status'] = 0;
         }
 
-        $imageUpload = $this->uploadSingleImage($request, 'image', 'slider', 'slider', 3840, 1738);
+        $imageUpload = $this->uploadSingleImage($request, 'image', 'slider', 'slider', 1920, 869);
 
         DB::beginTransaction();
         try {
