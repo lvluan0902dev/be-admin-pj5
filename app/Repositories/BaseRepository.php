@@ -57,4 +57,19 @@ class BaseRepository
             'per_page' => $per_page
         ];
     }
+
+    /**
+     * @param $status_raw
+     * @return int
+     */
+    public function convertStatus($status_raw)
+    {
+        if ($status_raw == 'true') {
+            $status_result = 1;
+        } else {
+            $status_result = 0;
+        }
+
+        return $status_result;
+    }
 }

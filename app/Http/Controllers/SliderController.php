@@ -84,11 +84,7 @@ class SliderController extends Controller
     {
         $data = $request->all();
 
-        if ($data['status'] == 'true') {
-            $data['status'] = 1;
-        } else {
-            $data['status'] = 0;
-        }
+        $data['status'] = $this->baseRepository->convertStatus($data['status']);
 
         $imageUpload = $this->uploadSingleImage($request, 'image', 'slider', 'slider', 1920, 869);
 
@@ -163,11 +159,7 @@ class SliderController extends Controller
             ]);
         }
 
-        if ($data['status'] == 'true') {
-            $data['status'] = 1;
-        } else {
-            $data['status'] = 0;
-        }
+        $data['status'] = $this->baseRepository->convertStatus($data['status']);
 
         $imageUpload = array();
 
