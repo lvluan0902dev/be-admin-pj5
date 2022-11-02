@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Slider;
+use App\Traits\ResponseTrait;
 use App\Traits\UploadImageTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -11,6 +12,7 @@ use Illuminate\Support\Facades\Log;
 class SliderController extends Controller
 {
     use UploadImageTrait;
+    use ResponseTrait;
 
     private $slider;
 
@@ -113,5 +115,15 @@ class SliderController extends Controller
                 'message' => $e->getMessage()
             ]);
         }
+    }
+
+    public function get($id) {
+        $slider = $this->slider
+            ->query()
+            ->find($id);
+        return $this->responseJson([
+            'success' => 1,
+            'data' => $slider
+        ]);
     }
 }

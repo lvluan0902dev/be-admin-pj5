@@ -19,5 +19,6 @@ Route::group([
     Route::prefix('slider')->group(function () {
         Route::post('list', 'SliderController@list');
         Route::post('add', 'SliderController@add');
+        Route::get('get/{id}', 'SliderController@get');
     });
 });
