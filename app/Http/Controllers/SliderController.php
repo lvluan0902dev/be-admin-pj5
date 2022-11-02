@@ -104,7 +104,7 @@ class SliderController extends Controller
             DB::commit();
             return $this->responseJson([
                 'success' => 1,
-                'message' => 'Slider added successfully'
+                'message' => 'Thêm Slider thành công'
             ]);
         } catch (\Exception $e) {
             DB::rollBack();
@@ -121,6 +121,14 @@ class SliderController extends Controller
         $slider = $this->slider
             ->query()
             ->find($id);
+
+        if (!$slider) {
+            return $this->responseJson([
+                'success' => 0,
+                'message' => 'Slider không tồn tại hoặc đã bị xoá'
+            ]);
+        }
+
         return $this->responseJson([
             'success' => 1,
             'data' => $slider
