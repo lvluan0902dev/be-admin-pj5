@@ -20,7 +20,7 @@ class SliderController extends Controller
     }
 
     public function list(Request $request) {
-        $query = Slider::query();
+        $query = $this->slider->query();
 
         $params = $request->all();
 
@@ -88,7 +88,7 @@ class SliderController extends Controller
 
         DB::beginTransaction();
         try {
-            Slider::query()
+            $this->slider->query()
                 ->create([
                     'title' => $data['title'],
                     'content' => $data['content'],
