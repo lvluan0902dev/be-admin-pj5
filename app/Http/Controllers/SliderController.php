@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Slider;
+use App\Repositories\BaseRepository;
 use App\Traits\ResponseTrait;
 use App\Traits\UploadImageTrait;
 use Illuminate\Http\Request;
@@ -14,13 +15,34 @@ class SliderController extends Controller
     use UploadImageTrait;
     use ResponseTrait;
 
+    /**
+     * @var Slider
+     */
     private $slider;
 
-    public function __construct(Slider $slider)
+    /**
+     * @var BaseRepository
+     */
+    private $baseRepository;
+
+    /**
+     * SliderController constructor.
+     * @param Slider $slider
+     * @param BaseRepository $baseRepository
+     */
+    public function __construct(
+        Slider $slider,
+        BaseRepository $baseRepository
+    )
     {
         $this->slider = $slider;
+        $this->baseRepository = $baseRepository;
     }
 
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function list(Request $request)
     {
         $query = $this->slider
@@ -38,47 +60,26 @@ class SliderController extends Controller
         }
 
         // Sort
-        if (isset($params['sort_field']) && !empty($params['sort_field'])) {
-            $sort_field = $params['sort_field'];
-        } else {
-            $sort_field = 'created_at';
-        }
-
-        if (isset($params['sort_type']) && !empty($params['sort_type'])) {
-            $sort_type = $params['sort_type'];
-        } else {
-            $sort_type = 'DESC';
-        }
-
-        $query = $query->orderBy($sort_field, $sort_type);
+        $query = $this->baseRepository->sort($query, $params);
 
         $total_result = $query->count();
 
         // Paginate
-        if (isset($params['per_page']) && !empty($params['per_page'])) {
-            $per_page = $params['per_page'];
-        } else {
-            $per_page = 10;
-        }
-
-        if (isset($params['first_row']) && !empty($params['first_row'])) {
-            $first_row = $params['first_row'];
-        } else {
-            $first_row = 0;
-        }
-
-        $page = $first_row / $per_page + 1;
-        $result = $query->paginate($per_page, ['*'], 'page', $page);
+        $result = $this->baseRepository->paginate($query, $params);
 
         return $this->responseJson([
-            'data' => $result->items(),
+            'data' => $result['data']->items(),
             'total_result' => $total_result,
             'total' => $total,
-            'page' => $page,
-            'last_page' => ceil($total_result / $per_page)
+            'page' => $result['page'],
+            'last_page' => ceil($total_result / $result['per_page'])
         ]);
     }
 
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function add(Request $request)
     {
         $data = $request->all();
@@ -120,6 +121,10 @@ class SliderController extends Controller
         ]);
     }
 
+    /**
+     * @param $id
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function get($id)
     {
         $slider = $this->slider
@@ -139,6 +144,10 @@ class SliderController extends Controller
         ]);
     }
 
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function edit(Request $request)
     {
         $data = $request->all();
@@ -208,6 +217,10 @@ class SliderController extends Controller
         ]);
     }
 
+    /**
+     * @param $id
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function delete($id)
     {
         $slider = $this->slider
