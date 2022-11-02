@@ -19,7 +19,8 @@ class SliderController extends Controller
         $this->slider = $slider;
     }
 
-    public function list(Request $request) {
+    public function list(Request $request)
+    {
         $query = $this->slider->query();
 
         $params = $request->all();
@@ -37,7 +38,7 @@ class SliderController extends Controller
         if (isset($params['sort_field']) && !empty($params['sort_field'])) {
             $sort_field = $params['sort_field'];
         } else {
-            $sort_field ='created_at';
+            $sort_field = 'created_at';
         }
 
         if (isset($params['sort_type']) && !empty($params['sort_type'])) {
@@ -75,7 +76,8 @@ class SliderController extends Controller
         ]);
     }
 
-    public function add(Request $request) {
+    public function add(Request $request)
+    {
         $data = $request->all();
 
         if ($data['status'] == 'true') {
