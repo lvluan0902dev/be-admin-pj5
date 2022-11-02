@@ -102,10 +102,6 @@ class SliderController extends Controller
                     'status' => $data['status']
                 ]);
             DB::commit();
-            return $this->responseJson([
-                'success' => 1,
-                'message' => 'Thêm Slider thành công'
-            ]);
         } catch (\Exception $e) {
             DB::rollBack();
             $this->deleteImage($imageUpload['image_path']);
@@ -115,9 +111,15 @@ class SliderController extends Controller
                 'message' => $e->getMessage()
             ]);
         }
+
+        return $this->responseJson([
+            'success' => 1,
+            'message' => 'Thêm Slider thành công'
+        ]);
     }
 
-    public function get($id) {
+    public function get($id)
+    {
         $slider = $this->slider
             ->query()
             ->find($id);
@@ -135,8 +137,68 @@ class SliderController extends Controller
         ]);
     }
 
-    public function edit(Request $request) {
+    public function edit(Request $request)
+    {
         $data = $request->all();
-        return $this->responseJson($request);
+
+        $slider = $this->slider
+            ->query()
+            ->find($data['id']);
+
+        if (!$slider) {
+            return $this->responseJson([
+                'success' => 0,
+                'message' => 'Slider không tồn tại hoặc đã bị xoá'
+            ]);
+        }
+
+        if ($data['status'] == 'true') {
+            $data['status'] = 1;
+        } else {
+            $data['status'] = 0;
+        }
+
+        $imageUpload = array();
+
+        $image_path_old = $slider->image_path;
+
+        if ($request->file('image')) {
+            $imageUpload = $this->uploadSingleImage($request, 'image', 'slider', 'slider', 1920, 869);
+        } else {
+            $imageUpload['image_path'] = $slider->image_path;
+            $imageUpload['image_name'] = $slider->image_name;
+        }
+
+        DB::beginTransaction();
+        try {
+            $slider
+                ->update([
+                    'title' => $data['title'],
+                    'content' => $data['content'],
+                    'link' => $data['link'],
+                    'image_name' => $imageUpload['image_name'],
+                    'image_path' => $imageUpload['image_path'],
+                    'status' => $data['status']
+                ]);
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            $this->deleteImage($imageUpload['image_path']);
+            Log::error($e->getMessage() . '. Line: ' . $e->getLine());
+            return $this->responseJson([
+                'success' => 0,
+                'message' => $e->getMessage()
+            ]);
+        }
+
+        // Delete old image if success
+        if ($request->file('image')) {
+            $this->deleteImage($image_path_old);
+        }
+
+        return $this->responseJson([
+            'success' => 1,
+            'message' => 'Sửa Slider thành công'
+        ]);
     }
 }
