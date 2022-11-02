@@ -69,7 +69,7 @@ class SliderController extends Controller
         $page = $first_row / $per_page + 1;
         $result = $query->paginate($per_page, ['*'], 'page', $page);
 
-        return response()->json([
+        return $this->responseJson([
             'data' => $result->items(),
             'total_result' => $total_result,
             'total' => $total,
@@ -102,7 +102,7 @@ class SliderController extends Controller
                     'status' => $data['status']
                 ]);
             DB::commit();
-            return response()->json([
+            return $this->responseJson([
                 'success' => 1,
                 'message' => 'Slider added successfully'
             ]);
@@ -110,7 +110,7 @@ class SliderController extends Controller
             DB::rollBack();
             $this->deleteImage($imageUpload['image_path']);
             Log::error($e->getMessage() . '. Line: ' . $e->getLine());
-            return response()->json([
+            return $this->responseJson([
                 'success' => 0,
                 'message' => $e->getMessage()
             ]);
