@@ -207,4 +207,45 @@ class SliderController extends Controller
             'message' => 'Sửa Slider thành công'
         ]);
     }
+
+    public function delete($id)
+    {
+        $slider = $this->slider
+            ->query()
+            ->find($id);
+
+        if (!$slider) {
+            return $this->responseJson([
+                'success' => 0,
+                'message' => 'Slider không tồn tại hoặc đã bị xoá'
+            ]);
+        }
+
+        $image_path = $slider->image_path;
+
+        DB::beginTransaction();
+        try {
+            if ($slider->query()->delete()) {
+                $this->deleteImage($image_path);
+            } else {
+                return $this->responseJson([
+                    'success' => 0,
+                    'message' => 'Xoá Slider không thành công'
+                ]);
+            }
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error($e->getMessage() . '. Line: ' . $e->getLine());
+            return $this->responseJson([
+                'success' => 0,
+                'message' => $e->getMessage()
+            ]);
+        }
+
+        return $this->responseJson([
+            'success' => 1,
+            'message' => 'Xoá Slider thành công'
+        ]);
+    }
 }

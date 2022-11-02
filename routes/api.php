@@ -21,5 +21,6 @@ Route::group([
         Route::post('add', 'SliderController@add');
         Route::get('get/{id}', 'SliderController@get');
         Route::put('edit', 'SliderController@edit');
+        Route::delete('delete/{id}', 'SliderController@delete');
     });
 });
