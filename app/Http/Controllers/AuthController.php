@@ -90,20 +90,6 @@ class AuthController extends Controller
     {
         $data = $request->all();
 
-//        if (User::query()->where('email', $data['email'])->get()->count() > 0) {
-//            return response()->json(['message' => 'Email already exists']);
-//        } elseif ($data['password'] != $data['confirm_password']) {
-//            return response()->json(['message' => 'Registered failed']);
-//        } else {
-//            $user = User::create([
-//                'name' => $data['name'],
-//                'email' => $data['email'],
-//                'password' => Hash::make($data['password'])
-//            ]);
-//
-//            return response()->json(['message' => 'Registered successfully']);
-//        }
-
         $user = User::create([
             'name' => $data['name'],
             'email' => $data['email'],
