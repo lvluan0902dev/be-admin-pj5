@@ -16,11 +16,21 @@ Route::group([
 Route::group([
     'middleware' => 'jwt.auth'
 ], function () {
+    // Slider
     Route::prefix('slider')->group(function () {
         Route::post('list', 'SliderController@list');
         Route::post('add', 'SliderController@add');
         Route::get('get/{id}', 'SliderController@get');
         Route::put('edit', 'SliderController@edit');
         Route::delete('delete/{id}', 'SliderController@delete');
+    });
+
+    // Testimonial
+    Route::prefix('testimonial')->group(function () {
+        Route::post('list', 'TestimonialController@list');
+        Route::post('add', 'TestimonialController@add');
+        Route::get('get/{id}', 'TestimonialController@get');
+        Route::put('edit', 'TestimonialController@edit');
+        Route::delete('delete/{id}', 'TestimonialController@delete');
     });
 });
