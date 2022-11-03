@@ -45,8 +45,7 @@ class SliderController extends Controller
      */
     public function list(Request $request)
     {
-        $query = $this->slider
-            ->query();
+        $query = $this->slider;
 
         $params = $request->all();
 
@@ -91,7 +90,6 @@ class SliderController extends Controller
         DB::beginTransaction();
         try {
             $this->slider
-                ->query()
                 ->create([
                     'title' => $data['title'],
                     'content' => $data['content'],
@@ -124,7 +122,6 @@ class SliderController extends Controller
     public function get($id)
     {
         $slider = $this->slider
-            ->query()
             ->find($id);
 
         if (!$slider) {
@@ -149,7 +146,6 @@ class SliderController extends Controller
         $data = $request->all();
 
         $slider = $this->slider
-            ->query()
             ->find($data['id']);
 
         if (!$slider) {
@@ -175,7 +171,6 @@ class SliderController extends Controller
         DB::beginTransaction();
         try {
             $slider
-                ->query()
                 ->update([
                     'title' => $data['title'],
                     'content' => $data['content'],
@@ -216,7 +211,6 @@ class SliderController extends Controller
     public function delete($id)
     {
         $slider = $this->slider
-            ->query()
             ->find($id);
 
         if (!$slider) {
@@ -230,7 +224,7 @@ class SliderController extends Controller
 
         DB::beginTransaction();
         try {
-            if ($slider->query()->delete()) {
+            if ($slider->delete()) {
                 $this->deleteImage($image_path);
             } else {
                 return $this->responseJson([
