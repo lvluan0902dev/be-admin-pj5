@@ -33,4 +33,13 @@ Route::group([
         Route::put('edit', 'TestimonialController@edit');
         Route::delete('delete/{id}', 'TestimonialController@delete');
     });
+
+    // Beauty Image
+    Route::prefix('beauty-image')->group(function () {
+        Route::post('list', 'BeautyImageController@list');
+        Route::post('add', 'BeautyImageController@add');
+        Route::get('get/{id}', 'BeautyImageController@get');
+        Route::put('edit', 'BeautyImageController@edit');
+        Route::delete('delete/{id}', 'BeautyImageController@delete');
+    });
 });
