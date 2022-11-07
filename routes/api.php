@@ -42,4 +42,13 @@ Route::group([
         Route::put('edit', 'BeautyImageController@edit');
         Route::delete('delete/{id}', 'BeautyImageController@delete');
     });
+
+    // Faq
+    Route::prefix('faq')->group(function () {
+        Route::post('list', 'FaqController@list');
+        Route::post('add', 'FaqController@add');
+        Route::get('get/{id}', 'FaqController@get');
+        Route::put('edit', 'FaqController@edit');
+        Route::delete('delete/{id}', 'FaqController@delete');
+    });
 });
