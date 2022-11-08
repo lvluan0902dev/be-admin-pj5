@@ -53,10 +53,7 @@ Route::group([
     });
     // Contact Setting
     Route::prefix('contact-setting')->group(function () {
-        Route::post('list', 'ContactSettingController@list');
-        Route::post('add', 'ContactSettingController@add');
-        Route::get('get/{id}', 'ContactSettingController@get');
+        Route::get('get/{title}', 'ContactSettingController@get');
         Route::put('edit', 'ContactSettingController@edit');
-        Route::delete('delete/{id}', 'ContactSettingController@delete');
     });
 });

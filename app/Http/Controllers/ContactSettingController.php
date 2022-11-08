@@ -21,7 +21,7 @@ class ContactSettingController extends Controller
     /**
      * @var BaseRepository
      */
-    private  $baseRepository;
+    private $baseRepository;
 
     /**
      * ContactSettingController constructor.
@@ -38,13 +38,14 @@ class ContactSettingController extends Controller
     }
 
     /**
-     * @param $id
+     * @param $title
      * @return \Illuminate\Http\JsonResponse
      */
-    public function get($id)
+    public function get($title)
     {
         $contactSetting = $this->contactSetting
-            ->find($id);
+            ->where('title', $title)
+            ->first();
 
         if (!$contactSetting) {
             return $this->responseJson([
