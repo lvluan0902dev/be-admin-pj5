@@ -15,22 +15,26 @@ class ContactSettingsTableSeeder extends Seeder
             [
                 'id' => 1,
                 'title' => 'address',
-                'content' => 'address'
+                'content' => 'address',
+                'status' => 0
             ],
             [
                 'id' => 2,
                 'title' => 'phone_number',
-                'content' => 'phone_number'
+                'content' => 'phone_number',
+                'status' => 0
             ],
             [
                 'id' => 3,
                 'title' => 'email',
-                'content' => 'email'
+                'content' => 'email',
+                'status' => 0
             ],
             [
                 'id' => 4,
                 'title' => 'google_maps',
-                'content' => 'google_maps'
+                'content' => 'google_maps',
+                'status' => 0
             ],
         ];
 

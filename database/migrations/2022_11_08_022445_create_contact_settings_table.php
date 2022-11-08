@@ -17,6 +17,7 @@ class CreateContactSettingsTable extends Migration
             $table->id();
             $table->string('title');
             $table->text('content');
+            $table->tinyInteger('status')->comment('0: Inactive, 1: Active');
             $table->timestamps();
         });
     }
