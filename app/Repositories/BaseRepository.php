@@ -12,18 +12,18 @@ class BaseRepository
     public function sort($query, $params)
     {
         if (isset($params['sort_field']) && !empty($params['sort_field'])) {
-            $sort_field = $params['sort_field'];
+            $sortField = $params['sort_field'];
         } else {
-            $sort_field = 'created_at';
+            $sortField = 'created_at';
         }
 
         if (isset($params['sort_type']) && !empty($params['sort_type'])) {
-            $sort_type = $params['sort_type'];
+            $sortType = $params['sort_type'];
         } else {
-            $sort_type = 'DESC';
+            $sortType = 'DESC';
         }
 
-        $query = $query->orderBy($sort_field, $sort_type);
+        $query = $query->orderBy($sortField, $sortType);
 
         return $query;
     }
@@ -36,40 +36,40 @@ class BaseRepository
     public function paginate($query, $params)
     {
         if (isset($params['per_page']) && !empty($params['per_page'])) {
-            $per_page = $params['per_page'];
+            $perPage = $params['per_page'];
         } else {
-            $per_page = 10;
+            $perPage = 10;
         }
 
         if (isset($params['first_row']) && !empty($params['first_row'])) {
-            $first_row = $params['first_row'];
+            $firstRow = $params['first_row'];
         } else {
-            $first_row = 0;
+            $firstRow = 0;
         }
 
-        $page = $first_row / $per_page + 1;
+        $page = $firstRow / $perPage + 1;
 
-        $data = $query->paginate($per_page, ['*'], 'page', $page);
+        $data = $query->paginate($perPage, ['*'], 'page', $page);
 
         return [
             'data' => $data,
             'page' => $page,
-            'per_page' => $per_page
+            'per_page' => $perPage
         ];
     }
 
     /**
-     * @param $status_raw
+     * @param $statusRaw
      * @return int
      */
-    public function convertStatus($status_raw)
+    public function convertStatus($statusRaw)
     {
-        if ($status_raw == 'true') {
-            $status_result = 1;
+        if ($statusRaw == 'true') {
+            $statusResult = 1;
         } else {
-            $status_result = 0;
+            $statusResult = 0;
         }
 
-        return $status_result;
+        return $statusResult;
     }
 }
