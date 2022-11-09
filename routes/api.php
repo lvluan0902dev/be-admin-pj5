@@ -66,4 +66,13 @@ Route::group([
         Route::put('edit', 'ProductCategoryController@edit');
         Route::delete('delete/{id}', 'ProductCategoryController@delete');
     });
+
+    // Product Brand
+    Route::prefix('product-brand')->group(function () {
+        Route::post('list', 'ProductBrandController@list');
+        Route::post('add', 'ProductBrandController@add');
+        Route::get('get/{id}', 'ProductBrandController@get');
+        Route::put('edit', 'ProductBrandController@edit');
+        Route::delete('delete/{id}', 'ProductBrandController@delete');
+    });
 });
