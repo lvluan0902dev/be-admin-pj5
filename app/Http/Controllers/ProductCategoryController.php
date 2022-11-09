@@ -58,17 +58,17 @@ class ProductCategoryController extends Controller
         // Sort
         $query = $this->baseRepository->sort($query, $params);
 
-        $total_result = $query->count();
+        $totalResult = $query->count();
 
         // Paginate
         $result = $this->baseRepository->paginate($query, $params);
 
         return $this->responseJson([
             'data' => $result['data']->items(),
-            'total_result' => $total_result,
+            'total_result' => $totalResult,
             'total' => $total,
             'page' => $result['page'],
-            'last_page' => ceil($total_result / $result['per_page'])
+            'last_page' => ceil($totalResult / $result['per_page'])
         ]);
     }
 

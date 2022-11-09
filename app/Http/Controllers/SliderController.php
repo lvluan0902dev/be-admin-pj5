@@ -61,17 +61,17 @@ class SliderController extends Controller
         // Sort
         $query = $this->baseRepository->sort($query, $params);
 
-        $total_result = $query->count();
+        $totalResult = $query->count();
 
         // Paginate
         $result = $this->baseRepository->paginate($query, $params);
 
         return $this->responseJson([
             'data' => $result['data']->items(),
-            'total_result' => $total_result,
+            'total_result' => $totalResult,
             'total' => $total,
             'page' => $result['page'],
-            'last_page' => ceil($total_result / $result['per_page'])
+            'last_page' => ceil($totalResult / $result['per_page'])
         ]);
     }
 
@@ -159,7 +159,7 @@ class SliderController extends Controller
 
         $imageUpload = array();
 
-        $image_path_old = $slider->image_path;
+        $imagePathOld = $slider->image_path;
 
         if ($request->file('image')) {
             $imageUpload = $this->uploadSingleImage($request, 'image', 'slider', 'slider', 1920, 869);
@@ -184,7 +184,7 @@ class SliderController extends Controller
             DB::rollBack();
             // Delete old image if success
             if ($request->file('image')) {
-                $this->deleteImage($image_path_old);
+                $this->deleteImage($imagePathOld);
             }
             Log::error($e->getMessage() . '. Line: ' . $e->getLine());
             return $this->responseJson([
@@ -195,7 +195,7 @@ class SliderController extends Controller
 
         // Delete old image if success
         if ($request->file('image')) {
-            $this->deleteImage($image_path_old);
+            $this->deleteImage($imagePathOld);
         }
 
         return $this->responseJson([
@@ -220,12 +220,12 @@ class SliderController extends Controller
             ]);
         }
 
-        $image_path = $slider->image_path;
+        $imagePath = $slider->image_path;
 
         DB::beginTransaction();
         try {
             if ($slider->delete()) {
-                $this->deleteImage($image_path);
+                $this->deleteImage($imagePath);
             } else {
                 return $this->responseJson([
                     'success' => 0,
