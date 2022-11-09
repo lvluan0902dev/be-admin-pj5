@@ -51,9 +51,19 @@ Route::group([
         Route::put('edit', 'FaqController@edit');
         Route::delete('delete/{id}', 'FaqController@delete');
     });
+
     // Contact Setting
     Route::prefix('contact-setting')->group(function () {
         Route::get('get/{title}', 'ContactSettingController@get');
         Route::put('edit', 'ContactSettingController@edit');
+    });
+
+    // Product Category
+    Route::prefix('product-category')->group(function () {
+        Route::post('list', 'ProductCategoryController@list');
+        Route::post('add', 'ProductCategoryController@add');
+        Route::get('get/{id}', 'ProductCategoryController@get');
+        Route::put('edit', 'ProductCategoryController@edit');
+        Route::delete('delete/{id}', 'ProductCategoryController@delete');
     });
 });
