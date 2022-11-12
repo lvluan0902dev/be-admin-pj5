@@ -78,3 +78,9 @@ Route::namespace('Admin')->group(function () {
         });
     });
 });
+
+Route::namespace('Front')->group(function () {
+    Route::prefix('front')->group(function () {
+        Route::get('get-all-slider', 'SliderController@getAll');
+    });
+});
