@@ -1,22 +1,23 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
-use App\Models\Faq;
+use App\Http\Controllers\Controller;
+use App\Models\ProductBrand;
 use App\Repositories\BaseRepository;
 use App\Traits\ResponseTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
-class FaqController extends Controller
+class ProductBrandController extends Controller
 {
     use ResponseTrait;
 
     /**
-     * @var Faq
+     * @var ProductBrand
      */
-    private $faq;
+    private $productBrand;
 
     /**
      * @var BaseRepository
@@ -24,16 +25,16 @@ class FaqController extends Controller
     private  $baseRepository;
 
     /**
-     * FaqController constructor.
-     * @param Faq $faq
+     * ProductBrandController constructor.
+     * @param ProductBrand $productBrand
      * @param BaseRepository $baseRepository
      */
     public function __construct(
-        Faq $faq,
+        ProductBrand $productBrand,
         BaseRepository $baseRepository
     )
     {
-        $this->faq = $faq;
+        $this->productBrand = $productBrand;
         $this->baseRepository = $baseRepository;
     }
 
@@ -43,7 +44,7 @@ class FaqController extends Controller
      */
     public function list(Request $request)
     {
-        $query = $this->faq;
+        $query = $this->productBrand;
 
         $params = $request->all();
 
@@ -52,8 +53,7 @@ class FaqController extends Controller
         // Search
         if (isset($params['search']) && !empty($params['search'])) {
             $query = $query
-                ->where('title', 'LIKE', '%' . $params['search'] . '%')
-                ->orWhere('content', 'LIKE', '%' . $params['search'] . '%');
+                ->where('name', 'LIKE', '%' . $params['search'] . '%');
         }
 
         // Sort
@@ -85,10 +85,9 @@ class FaqController extends Controller
 
         DB::beginTransaction();
         try {
-            $this->faq
+            $this->productBrand
                 ->create([
-                    'title' => $data['title'],
-                    'content' => $data['content'],
+                    'name' => $data['name'],
                     'status' => $data['status']
                 ]);
             DB::commit();
@@ -103,7 +102,7 @@ class FaqController extends Controller
 
         return $this->responseJson([
             'success' => 1,
-            'message' => 'Thêm Câu hỏi thường gặp thành công'
+            'message' => 'Thêm Thương hiệu sản phẩm thành công'
         ]);
     }
 
@@ -113,19 +112,19 @@ class FaqController extends Controller
      */
     public function get($id)
     {
-        $faq = $this->faq
+        $productBrand = $this->productBrand
             ->find($id);
 
-        if (!$faq) {
+        if (!$productBrand) {
             return $this->responseJson([
                 'success' => 0,
-                'message' => 'Câu hỏi thường gặp không tồn tại hoặc đã bị xoá'
+                'message' => 'Thương hiệu sản phẩm không tồn tại hoặc đã bị xoá'
             ]);
         }
 
         return $this->responseJson([
             'success' => 1,
-            'data' => $faq
+            'data' => $productBrand
         ]);
     }
 
@@ -137,13 +136,13 @@ class FaqController extends Controller
     {
         $data = $request->all();
 
-        $faq = $this->faq
+        $productBrand = $this->productBrand
             ->find($data['id']);
 
-        if (!$faq) {
+        if (!$productBrand) {
             return $this->responseJson([
                 'success' => 0,
-                'message' => 'Câu hỏi thường gặp không tồn tại hoặc đã bị xoá'
+                'message' => 'Thương hiệu sản phẩm không tồn tại hoặc đã bị xoá'
             ]);
         }
 
@@ -151,10 +150,9 @@ class FaqController extends Controller
 
         DB::beginTransaction();
         try {
-            $faq
+            $productBrand
                 ->update([
-                    'title' => $data['title'],
-                    'content' => $data['content'],
+                    'name' => $data['name'],
                     'status' => $data['status']
                 ]);
             DB::commit();
@@ -169,7 +167,7 @@ class FaqController extends Controller
 
         return $this->responseJson([
             'success' => 1,
-            'message' => 'Sửa Câu hỏi thường gặp thành công'
+            'message' => 'Thương hiệu sản phẩm thành công'
         ]);
     }
 
@@ -179,24 +177,24 @@ class FaqController extends Controller
      */
     public function delete($id)
     {
-        $faq = $this->faq
+        $productBrand = $this->productBrand
             ->find($id);
 
-        if (!$faq) {
+        if (!$productBrand) {
             return $this->responseJson([
                 'success' => 0,
-                'message' => 'Câu hỏi thường gặp không tồn tại hoặc đã bị xoá'
+                'message' => 'Thương hiệu sản phẩm không tồn tại hoặc đã bị xoá'
             ]);
         }
 
         DB::beginTransaction();
         try {
-            if ($faq->delete()) {
+            if ($productBrand->delete()) {
 
             } else {
                 return $this->responseJson([
                     'success' => 0,
-                    'message' => 'Xoá Câu hỏi thường gặp không thành công'
+                    'message' => 'Xoá Thương hiệu sản phẩm không thành công'
                 ]);
             }
             DB::commit();
@@ -211,7 +209,7 @@ class FaqController extends Controller
 
         return $this->responseJson([
             'success' => 1,
-            'message' => 'Xoá Câu hỏi thường gặp thành công'
+            'message' => 'Xoá Thương hiệu sản phẩm thành công'
         ]);
     }
 }

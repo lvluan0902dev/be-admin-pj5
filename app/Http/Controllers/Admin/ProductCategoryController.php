@@ -1,41 +1,40 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
-use App\Models\BeautyImage;
+use App\Http\Controllers\Controller;
+use App\Models\ProductCategory;
 use App\Repositories\BaseRepository;
 use App\Traits\ResponseTrait;
-use App\Traits\UploadImageTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
-class BeautyImageController extends Controller
+class ProductCategoryController extends Controller
 {
-    use UploadImageTrait;
     use ResponseTrait;
 
     /**
-     * @var BeautyImage
+     * @var ProductCategory
      */
-    private $beautyImage;
+    private $productCategory;
 
     /**
      * @var BaseRepository
      */
-    private $baseRepository;
+    private  $baseRepository;
 
     /**
-     * BeautyImageController constructor.
-     * @param BeautyImage $beautyImage
+     * ProductCategoryController constructor.
+     * @param ProductCategory $productCategory
      * @param BaseRepository $baseRepository
      */
     public function __construct(
-        BeautyImage $beautyImage,
+        ProductCategory $productCategory,
         BaseRepository $baseRepository
     )
     {
-        $this->beautyImage = $beautyImage;
+        $this->productCategory = $productCategory;
         $this->baseRepository = $baseRepository;
     }
 
@@ -45,11 +44,17 @@ class BeautyImageController extends Controller
      */
     public function list(Request $request)
     {
-        $query = $this->beautyImage;
+        $query = $this->productCategory;
 
         $params = $request->all();
 
         $total = $query->count();
+
+        // Search
+        if (isset($params['search']) && !empty($params['search'])) {
+            $query = $query
+                ->where('name', 'LIKE', '%' . $params['search'] . '%');
+        }
 
         // Sort
         $query = $this->baseRepository->sort($query, $params);
@@ -78,20 +83,16 @@ class BeautyImageController extends Controller
 
         $data['status'] = $this->baseRepository->convertStatus($data['status']);
 
-        $imageUpload = $this->uploadSingleImage($request, 'image', 'beauty-image', 'beauty-image', 500, 500);
-
         DB::beginTransaction();
         try {
-            $this->beautyImage
+            $this->productCategory
                 ->create([
-                    'image_name' => $imageUpload['image_name'],
-                    'image_path' => $imageUpload['image_path'],
+                    'name' => $data['name'],
                     'status' => $data['status']
                 ]);
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
-            $this->deleteImage($imageUpload['image_path']);
             Log::error($e->getMessage() . '. Line: ' . $e->getLine());
             return $this->responseJson([
                 'success' => 0,
@@ -101,7 +102,7 @@ class BeautyImageController extends Controller
 
         return $this->responseJson([
             'success' => 1,
-            'message' => 'Thêm Hình ảnh đẹp thành công'
+            'message' => 'Thêm Danh mục sản phẩm thành công'
         ]);
     }
 
@@ -111,19 +112,19 @@ class BeautyImageController extends Controller
      */
     public function get($id)
     {
-        $beautyImage = $this->beautyImage
+        $productCategory = $this->productCategory
             ->find($id);
 
-        if (!$beautyImage) {
+        if (!$productCategory) {
             return $this->responseJson([
                 'success' => 0,
-                'message' => 'Hình ảnh đẹp không tồn tại hoặc đã bị xoá'
+                'message' => 'Danh mục sản phẩm không tồn tại hoặc đã bị xoá'
             ]);
         }
 
         return $this->responseJson([
             'success' => 1,
-            'data' => $beautyImage
+            'data' => $productCategory
         ]);
     }
 
@@ -135,44 +136,28 @@ class BeautyImageController extends Controller
     {
         $data = $request->all();
 
-        $beautyImage = $this->beautyImage
+        $productCategory = $this->productCategory
             ->find($data['id']);
 
-        if (!$beautyImage) {
+        if (!$productCategory) {
             return $this->responseJson([
                 'success' => 0,
-                'message' => 'Hình ảnh đẹp không tồn tại hoặc đã bị xoá'
+                'message' => 'Danh mục sản phẩm không tồn tại hoặc đã bị xoá'
             ]);
         }
 
         $data['status'] = $this->baseRepository->convertStatus($data['status']);
 
-        $imageUpload = array();
-
-        $imagePathOld = $beautyImage->image_path;
-
-        if ($request->file('image')) {
-            $imageUpload = $this->uploadSingleImage($request, 'image', 'beauty-image', 'beauty-image', 500, 500);
-        } else {
-            $imageUpload['image_path'] = $beautyImage->image_path;
-            $imageUpload['image_name'] = $beautyImage->image_name;
-        }
-
         DB::beginTransaction();
         try {
-            $beautyImage
+            $productCategory
                 ->update([
-                    'image_name' => $imageUpload['image_name'],
-                    'image_path' => $imageUpload['image_path'],
+                    'name' => $data['name'],
                     'status' => $data['status']
                 ]);
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
-            // Delete old image if success
-            if ($request->file('image')) {
-                $this->deleteImage($imagePathOld);
-            }
             Log::error($e->getMessage() . '. Line: ' . $e->getLine());
             return $this->responseJson([
                 'success' => 0,
@@ -180,14 +165,9 @@ class BeautyImageController extends Controller
             ]);
         }
 
-        // Delete old image if success
-        if ($request->file('image')) {
-            $this->deleteImage($imagePathOld);
-        }
-
         return $this->responseJson([
             'success' => 1,
-            'message' => 'Sửa Hình ảnh đẹp thành công'
+            'message' => 'Danh mục sản phẩm thành công'
         ]);
     }
 
@@ -197,26 +177,24 @@ class BeautyImageController extends Controller
      */
     public function delete($id)
     {
-        $beautyImage = $this->beautyImage
+        $productCategory = $this->productCategory
             ->find($id);
 
-        if (!$beautyImage) {
+        if (!$productCategory) {
             return $this->responseJson([
                 'success' => 0,
-                'message' => 'Hình ảnh đẹp không tồn tại hoặc đã bị xoá'
+                'message' => 'Danh mục sản phẩm không tồn tại hoặc đã bị xoá'
             ]);
         }
 
-        $imagePath = $beautyImage->image_path;
-
         DB::beginTransaction();
         try {
-            if ($beautyImage->delete()) {
-                $this->deleteImage($imagePath);
+            if ($productCategory->delete()) {
+
             } else {
                 return $this->responseJson([
                     'success' => 0,
-                    'message' => 'Xoá Hình ảnh đẹp không thành công'
+                    'message' => 'Xoá Danh mục sản phẩm không thành công'
                 ]);
             }
             DB::commit();
@@ -231,7 +209,7 @@ class BeautyImageController extends Controller
 
         return $this->responseJson([
             'success' => 1,
-            'message' => 'Xoá Hình ảnh đẹp thành công'
+            'message' => 'Xoá Danh mục sản phẩm thành công'
         ]);
     }
 }

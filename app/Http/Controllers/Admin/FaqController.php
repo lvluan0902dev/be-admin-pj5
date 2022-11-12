@@ -1,22 +1,23 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
-use App\Models\ProductBrand;
+use App\Http\Controllers\Controller;
+use App\Models\Faq;
 use App\Repositories\BaseRepository;
 use App\Traits\ResponseTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
-class ProductBrandController extends Controller
+class FaqController extends Controller
 {
     use ResponseTrait;
 
     /**
-     * @var ProductBrand
+     * @var Faq
      */
-    private $productBrand;
+    private $faq;
 
     /**
      * @var BaseRepository
@@ -24,16 +25,16 @@ class ProductBrandController extends Controller
     private  $baseRepository;
 
     /**
-     * ProductBrandController constructor.
-     * @param ProductBrand $productBrand
+     * FaqController constructor.
+     * @param Faq $faq
      * @param BaseRepository $baseRepository
      */
     public function __construct(
-        ProductBrand $productBrand,
+        Faq $faq,
         BaseRepository $baseRepository
     )
     {
-        $this->productBrand = $productBrand;
+        $this->faq = $faq;
         $this->baseRepository = $baseRepository;
     }
 
@@ -43,7 +44,7 @@ class ProductBrandController extends Controller
      */
     public function list(Request $request)
     {
-        $query = $this->productBrand;
+        $query = $this->faq;
 
         $params = $request->all();
 
@@ -52,7 +53,8 @@ class ProductBrandController extends Controller
         // Search
         if (isset($params['search']) && !empty($params['search'])) {
             $query = $query
-                ->where('name', 'LIKE', '%' . $params['search'] . '%');
+                ->where('title', 'LIKE', '%' . $params['search'] . '%')
+                ->orWhere('content', 'LIKE', '%' . $params['search'] . '%');
         }
 
         // Sort
@@ -84,9 +86,10 @@ class ProductBrandController extends Controller
 
         DB::beginTransaction();
         try {
-            $this->productBrand
+            $this->faq
                 ->create([
-                    'name' => $data['name'],
+                    'title' => $data['title'],
+                    'content' => $data['content'],
                     'status' => $data['status']
                 ]);
             DB::commit();
@@ -101,7 +104,7 @@ class ProductBrandController extends Controller
 
         return $this->responseJson([
             'success' => 1,
-            'message' => 'Thêm Thương hiệu sản phẩm thành công'
+            'message' => 'Thêm Câu hỏi thường gặp thành công'
         ]);
     }
 
@@ -111,19 +114,19 @@ class ProductBrandController extends Controller
      */
     public function get($id)
     {
-        $productBrand = $this->productBrand
+        $faq = $this->faq
             ->find($id);
 
-        if (!$productBrand) {
+        if (!$faq) {
             return $this->responseJson([
                 'success' => 0,
-                'message' => 'Thương hiệu sản phẩm không tồn tại hoặc đã bị xoá'
+                'message' => 'Câu hỏi thường gặp không tồn tại hoặc đã bị xoá'
             ]);
         }
 
         return $this->responseJson([
             'success' => 1,
-            'data' => $productBrand
+            'data' => $faq
         ]);
     }
 
@@ -135,13 +138,13 @@ class ProductBrandController extends Controller
     {
         $data = $request->all();
 
-        $productBrand = $this->productBrand
+        $faq = $this->faq
             ->find($data['id']);
 
-        if (!$productBrand) {
+        if (!$faq) {
             return $this->responseJson([
                 'success' => 0,
-                'message' => 'Thương hiệu sản phẩm không tồn tại hoặc đã bị xoá'
+                'message' => 'Câu hỏi thường gặp không tồn tại hoặc đã bị xoá'
             ]);
         }
 
@@ -149,9 +152,10 @@ class ProductBrandController extends Controller
 
         DB::beginTransaction();
         try {
-            $productBrand
+            $faq
                 ->update([
-                    'name' => $data['name'],
+                    'title' => $data['title'],
+                    'content' => $data['content'],
                     'status' => $data['status']
                 ]);
             DB::commit();
@@ -166,7 +170,7 @@ class ProductBrandController extends Controller
 
         return $this->responseJson([
             'success' => 1,
-            'message' => 'Thương hiệu sản phẩm thành công'
+            'message' => 'Sửa Câu hỏi thường gặp thành công'
         ]);
     }
 
@@ -176,24 +180,24 @@ class ProductBrandController extends Controller
      */
     public function delete($id)
     {
-        $productBrand = $this->productBrand
+        $faq = $this->faq
             ->find($id);
 
-        if (!$productBrand) {
+        if (!$faq) {
             return $this->responseJson([
                 'success' => 0,
-                'message' => 'Thương hiệu sản phẩm không tồn tại hoặc đã bị xoá'
+                'message' => 'Câu hỏi thường gặp không tồn tại hoặc đã bị xoá'
             ]);
         }
 
         DB::beginTransaction();
         try {
-            if ($productBrand->delete()) {
+            if ($faq->delete()) {
 
             } else {
                 return $this->responseJson([
                     'success' => 0,
-                    'message' => 'Xoá Thương hiệu sản phẩm không thành công'
+                    'message' => 'Xoá Câu hỏi thường gặp không thành công'
                 ]);
             }
             DB::commit();
@@ -208,7 +212,7 @@ class ProductBrandController extends Controller
 
         return $this->responseJson([
             'success' => 1,
-            'message' => 'Xoá Thương hiệu sản phẩm thành công'
+            'message' => 'Xoá Câu hỏi thường gặp thành công'
         ]);
     }
 }

@@ -1,39 +1,42 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
-use App\Models\ProductCategory;
+use App\Http\Controllers\Controller;
+use App\Models\Testimonial;
 use App\Repositories\BaseRepository;
 use App\Traits\ResponseTrait;
+use App\Traits\UploadImageTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
-class ProductCategoryController extends Controller
+class TestimonialController extends Controller
 {
+    use UploadImageTrait;
     use ResponseTrait;
 
     /**
-     * @var ProductCategory
+     * @var Testimonial
      */
-    private $productCategory;
+    private $testimonial;
 
     /**
      * @var BaseRepository
      */
-    private  $baseRepository;
+    private $baseRepository;
 
     /**
-     * ProductCategoryController constructor.
-     * @param ProductCategory $productCategory
+     * TestimonialController constructor.
+     * @param Testimonial $testimonial
      * @param BaseRepository $baseRepository
      */
     public function __construct(
-        ProductCategory $productCategory,
+        Testimonial $testimonial,
         BaseRepository $baseRepository
     )
     {
-        $this->productCategory = $productCategory;
+        $this->testimonial = $testimonial;
         $this->baseRepository = $baseRepository;
     }
 
@@ -43,7 +46,7 @@ class ProductCategoryController extends Controller
      */
     public function list(Request $request)
     {
-        $query = $this->productCategory;
+        $query = $this->testimonial;
 
         $params = $request->all();
 
@@ -52,7 +55,8 @@ class ProductCategoryController extends Controller
         // Search
         if (isset($params['search']) && !empty($params['search'])) {
             $query = $query
-                ->where('name', 'LIKE', '%' . $params['search'] . '%');
+                ->where('name', 'LIKE', '%' . $params['search'] . '%')
+                ->orWhere('content', 'LIKE', '%' . $params['search'] . '%');
         }
 
         // Sort
@@ -82,16 +86,22 @@ class ProductCategoryController extends Controller
 
         $data['status'] = $this->baseRepository->convertStatus($data['status']);
 
+        $imageUpload = $this->uploadSingleImage($request, 'image', 'testimonial', 'testimonial', 80, 80);
+
         DB::beginTransaction();
         try {
-            $this->productCategory
+            $this->testimonial
                 ->create([
                     'name' => $data['name'],
+                    'content' => $data['content'],
+                    'image_name' => $imageUpload['image_name'],
+                    'image_path' => $imageUpload['image_path'],
                     'status' => $data['status']
                 ]);
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
+            $this->deleteImage($imageUpload['image_path']);
             Log::error($e->getMessage() . '. Line: ' . $e->getLine());
             return $this->responseJson([
                 'success' => 0,
@@ -101,7 +111,7 @@ class ProductCategoryController extends Controller
 
         return $this->responseJson([
             'success' => 1,
-            'message' => 'Thêm Danh mục sản phẩm thành công'
+            'message' => 'Thêm Khách hàng chứng thực thành công'
         ]);
     }
 
@@ -111,19 +121,19 @@ class ProductCategoryController extends Controller
      */
     public function get($id)
     {
-        $productCategory = $this->productCategory
+        $testimonial = $this->testimonial
             ->find($id);
 
-        if (!$productCategory) {
+        if (!$testimonial) {
             return $this->responseJson([
                 'success' => 0,
-                'message' => 'Danh mục sản phẩm không tồn tại hoặc đã bị xoá'
+                'message' => 'Khách hàng chứng thực không tồn tại hoặc đã bị xoá'
             ]);
         }
 
         return $this->responseJson([
             'success' => 1,
-            'data' => $productCategory
+            'data' => $testimonial
         ]);
     }
 
@@ -135,28 +145,46 @@ class ProductCategoryController extends Controller
     {
         $data = $request->all();
 
-        $productCategory = $this->productCategory
+        $testimonial = $this->testimonial
             ->find($data['id']);
 
-        if (!$productCategory) {
+        if (!$testimonial) {
             return $this->responseJson([
                 'success' => 0,
-                'message' => 'Danh mục sản phẩm không tồn tại hoặc đã bị xoá'
+                'message' => 'Khách hàng chứng thực không tồn tại hoặc đã bị xoá'
             ]);
         }
 
         $data['status'] = $this->baseRepository->convertStatus($data['status']);
 
+        $imageUpload = array();
+
+        $imagePathOld = $testimonial->image_path;
+
+        if ($request->file('image')) {
+            $imageUpload = $this->uploadSingleImage($request, 'image', 'testimonial', 'testimonial', 80, 80);
+        } else {
+            $imageUpload['image_path'] = $testimonial->image_path;
+            $imageUpload['image_name'] = $testimonial->image_name;
+        }
+
         DB::beginTransaction();
         try {
-            $productCategory
+            $testimonial
                 ->update([
                     'name' => $data['name'],
+                    'content' => $data['content'],
+                    'image_name' => $imageUpload['image_name'],
+                    'image_path' => $imageUpload['image_path'],
                     'status' => $data['status']
                 ]);
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
+            // Delete old image if success
+            if ($request->file('image')) {
+                $this->deleteImage($imagePathOld);
+            }
             Log::error($e->getMessage() . '. Line: ' . $e->getLine());
             return $this->responseJson([
                 'success' => 0,
@@ -164,9 +192,14 @@ class ProductCategoryController extends Controller
             ]);
         }
 
+        // Delete old image if success
+        if ($request->file('image')) {
+            $this->deleteImage($imagePathOld);
+        }
+
         return $this->responseJson([
             'success' => 1,
-            'message' => 'Danh mục sản phẩm thành công'
+            'message' => 'Sửa Khách hàng chứng thực thành công'
         ]);
     }
 
@@ -176,24 +209,26 @@ class ProductCategoryController extends Controller
      */
     public function delete($id)
     {
-        $productCategory = $this->productCategory
+        $testimonial = $this->testimonial
             ->find($id);
 
-        if (!$productCategory) {
+        if (!$testimonial) {
             return $this->responseJson([
                 'success' => 0,
-                'message' => 'Danh mục sản phẩm không tồn tại hoặc đã bị xoá'
+                'message' => 'Khách hàng chứng thực không tồn tại hoặc đã bị xoá'
             ]);
         }
 
+        $imagePath = $testimonial->image_path;
+
         DB::beginTransaction();
         try {
-            if ($productCategory->delete()) {
-
+            if ($testimonial->delete()) {
+                $this->deleteImage($imagePath);
             } else {
                 return $this->responseJson([
                     'success' => 0,
-                    'message' => 'Xoá Danh mục sản phẩm không thành công'
+                    'message' => 'Xoá Khách hàng chứng thực không thành công'
                 ]);
             }
             DB::commit();
@@ -208,7 +243,7 @@ class ProductCategoryController extends Controller
 
         return $this->responseJson([
             'success' => 1,
-            'message' => 'Xoá Danh mục sản phẩm thành công'
+            'message' => 'Xoá Khách hàng chứng thực thành công'
         ]);
     }
 }

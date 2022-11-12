@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
-use App\Models\Testimonial;
+use App\Http\Controllers\Controller;
+use App\Models\BeautyImage;
 use App\Repositories\BaseRepository;
 use App\Traits\ResponseTrait;
 use App\Traits\UploadImageTrait;
@@ -10,15 +11,15 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
-class TestimonialController extends Controller
+class BeautyImageController extends Controller
 {
     use UploadImageTrait;
     use ResponseTrait;
 
     /**
-     * @var Testimonial
+     * @var BeautyImage
      */
-    private $testimonial;
+    private $beautyImage;
 
     /**
      * @var BaseRepository
@@ -26,16 +27,16 @@ class TestimonialController extends Controller
     private $baseRepository;
 
     /**
-     * TestimonialController constructor.
-     * @param Testimonial $testimonial
+     * BeautyImageController constructor.
+     * @param BeautyImage $beautyImage
      * @param BaseRepository $baseRepository
      */
     public function __construct(
-        Testimonial $testimonial,
+        BeautyImage $beautyImage,
         BaseRepository $baseRepository
     )
     {
-        $this->testimonial = $testimonial;
+        $this->beautyImage = $beautyImage;
         $this->baseRepository = $baseRepository;
     }
 
@@ -45,18 +46,11 @@ class TestimonialController extends Controller
      */
     public function list(Request $request)
     {
-        $query = $this->testimonial;
+        $query = $this->beautyImage;
 
         $params = $request->all();
 
         $total = $query->count();
-
-        // Search
-        if (isset($params['search']) && !empty($params['search'])) {
-            $query = $query
-                ->where('name', 'LIKE', '%' . $params['search'] . '%')
-                ->orWhere('content', 'LIKE', '%' . $params['search'] . '%');
-        }
 
         // Sort
         $query = $this->baseRepository->sort($query, $params);
@@ -85,14 +79,12 @@ class TestimonialController extends Controller
 
         $data['status'] = $this->baseRepository->convertStatus($data['status']);
 
-        $imageUpload = $this->uploadSingleImage($request, 'image', 'testimonial', 'testimonial', 80, 80);
+        $imageUpload = $this->uploadSingleImage($request, 'image', 'beauty-image', 'beauty-image', 500, 500);
 
         DB::beginTransaction();
         try {
-            $this->testimonial
+            $this->beautyImage
                 ->create([
-                    'name' => $data['name'],
-                    'content' => $data['content'],
                     'image_name' => $imageUpload['image_name'],
                     'image_path' => $imageUpload['image_path'],
                     'status' => $data['status']
@@ -110,7 +102,7 @@ class TestimonialController extends Controller
 
         return $this->responseJson([
             'success' => 1,
-            'message' => 'Thêm Khách hàng chứng thực thành công'
+            'message' => 'Thêm Hình ảnh đẹp thành công'
         ]);
     }
 
@@ -120,19 +112,19 @@ class TestimonialController extends Controller
      */
     public function get($id)
     {
-        $testimonial = $this->testimonial
+        $beautyImage = $this->beautyImage
             ->find($id);
 
-        if (!$testimonial) {
+        if (!$beautyImage) {
             return $this->responseJson([
                 'success' => 0,
-                'message' => 'Khách hàng chứng thực không tồn tại hoặc đã bị xoá'
+                'message' => 'Hình ảnh đẹp không tồn tại hoặc đã bị xoá'
             ]);
         }
 
         return $this->responseJson([
             'success' => 1,
-            'data' => $testimonial
+            'data' => $beautyImage
         ]);
     }
 
@@ -144,13 +136,13 @@ class TestimonialController extends Controller
     {
         $data = $request->all();
 
-        $testimonial = $this->testimonial
+        $beautyImage = $this->beautyImage
             ->find($data['id']);
 
-        if (!$testimonial) {
+        if (!$beautyImage) {
             return $this->responseJson([
                 'success' => 0,
-                'message' => 'Khách hàng chứng thực không tồn tại hoặc đã bị xoá'
+                'message' => 'Hình ảnh đẹp không tồn tại hoặc đã bị xoá'
             ]);
         }
 
@@ -158,21 +150,19 @@ class TestimonialController extends Controller
 
         $imageUpload = array();
 
-        $imagePathOld = $testimonial->image_path;
+        $imagePathOld = $beautyImage->image_path;
 
         if ($request->file('image')) {
-            $imageUpload = $this->uploadSingleImage($request, 'image', 'testimonial', 'testimonial', 80, 80);
+            $imageUpload = $this->uploadSingleImage($request, 'image', 'beauty-image', 'beauty-image', 500, 500);
         } else {
-            $imageUpload['image_path'] = $testimonial->image_path;
-            $imageUpload['image_name'] = $testimonial->image_name;
+            $imageUpload['image_path'] = $beautyImage->image_path;
+            $imageUpload['image_name'] = $beautyImage->image_name;
         }
 
         DB::beginTransaction();
         try {
-            $testimonial
+            $beautyImage
                 ->update([
-                    'name' => $data['name'],
-                    'content' => $data['content'],
                     'image_name' => $imageUpload['image_name'],
                     'image_path' => $imageUpload['image_path'],
                     'status' => $data['status']
@@ -198,7 +188,7 @@ class TestimonialController extends Controller
 
         return $this->responseJson([
             'success' => 1,
-            'message' => 'Sửa Khách hàng chứng thực thành công'
+            'message' => 'Sửa Hình ảnh đẹp thành công'
         ]);
     }
 
@@ -208,26 +198,26 @@ class TestimonialController extends Controller
      */
     public function delete($id)
     {
-        $testimonial = $this->testimonial
+        $beautyImage = $this->beautyImage
             ->find($id);
 
-        if (!$testimonial) {
+        if (!$beautyImage) {
             return $this->responseJson([
                 'success' => 0,
-                'message' => 'Khách hàng chứng thực không tồn tại hoặc đã bị xoá'
+                'message' => 'Hình ảnh đẹp không tồn tại hoặc đã bị xoá'
             ]);
         }
 
-        $imagePath = $testimonial->image_path;
+        $imagePath = $beautyImage->image_path;
 
         DB::beginTransaction();
         try {
-            if ($testimonial->delete()) {
+            if ($beautyImage->delete()) {
                 $this->deleteImage($imagePath);
             } else {
                 return $this->responseJson([
                     'success' => 0,
-                    'message' => 'Xoá Khách hàng chứng thực không thành công'
+                    'message' => 'Xoá Hình ảnh đẹp không thành công'
                 ]);
             }
             DB::commit();
@@ -242,7 +232,7 @@ class TestimonialController extends Controller
 
         return $this->responseJson([
             'success' => 1,
-            'message' => 'Xoá Khách hàng chứng thực thành công'
+            'message' => 'Xoá Hình ảnh đẹp thành công'
         ]);
     }
 }
