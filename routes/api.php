@@ -15,7 +15,8 @@ Route::group([
 
 Route::namespace('Admin')->group(function () {
     Route::group([
-        'middleware' => 'jwt.auth'
+        'middleware' => 'jwt.auth',
+        'prefix' => 'admin'
     ], function () {
         // Slider
         Route::prefix('slider')->group(function () {
