@@ -144,7 +144,7 @@ trait UploadImageTrait
 
     public function deleteImage($imagePath)
     {
-        if (is_dir(public_path($imagePath)) == true) {
+        if (file_exists(public_path($imagePath)) == true) {
             unlink(public_path($imagePath));
         }
         return true;

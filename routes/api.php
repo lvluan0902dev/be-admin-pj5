@@ -77,6 +77,15 @@ Route::namespace('Admin')->group(function () {
             Route::put('edit', 'ProductBrandController@edit');
             Route::delete('delete/{id}', 'ProductBrandController@delete');
         });
+
+        // Staff
+        Route::prefix('staff')->group(function () {
+            Route::post('list', 'StaffController@list');
+            Route::post('add', 'StaffController@add');
+            Route::get('get/{id}', 'StaffController@get');
+            Route::put('edit', 'StaffController@edit');
+            Route::delete('delete/{id}', 'StaffController@delete');
+        });
     });
 });
 
