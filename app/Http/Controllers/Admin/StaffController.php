@@ -94,10 +94,10 @@ class StaffController extends Controller
                 ->create([
                     'name' => $data['name'],
                     'position' => $data['position'],
-                    'link_linked_in' => $data['link_linked_in']??'',
-                    'link_facebook' => $data['link_facebook']??'',
-                    'link_instagram' => $data['link_instagram']??'',
-                    'link_youtube' => $data['link_youtube']??'',
+                    'link_linked_in' => $data['link_linked_in'] ?? '',
+                    'link_facebook' => $data['link_facebook'] ?? '',
+                    'link_instagram' => $data['link_instagram'] ?? '',
+                    'link_youtube' => $data['link_youtube'] ?? '',
                     'image_name' => $imageUpload['image_name'],
                     'image_path' => $imageUpload['image_path'],
                     'status' => $data['status']
