@@ -82,6 +82,7 @@ Route::namespace('Admin')->group(function () {
 
 Route::namespace('Front')->group(function () {
     Route::prefix('front')->group(function () {
-        Route::get('get-all-slider', 'SliderController@getAll');
+        Route::get('get-all-slider', 'HomeController@getAllSlider');
+        Route::get('get-all-testimonial', 'HomeController@getAllTestimonial');
     });
 });
