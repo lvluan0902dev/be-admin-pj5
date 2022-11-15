@@ -94,5 +94,6 @@ Route::namespace('Front')->group(function () {
         Route::get('get-all-slider', 'HomeController@getAllSlider');
         Route::get('get-all-testimonial', 'HomeController@getAllTestimonial');
         Route::get('get-all-beauty-image', 'HomeController@getAllBeautyImage');
+        Route::get('get-all-staff', 'AboutUsController@getAllStaff');
     });
 });

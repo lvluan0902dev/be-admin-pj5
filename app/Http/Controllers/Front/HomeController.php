@@ -32,6 +32,7 @@ class HomeController extends Controller
      * HomeController constructor.
      * @param Slider $slider
      * @param Testimonial $testimonial
+     * @param BeautyImage $beautyImage
      */
     public function __construct(
         Slider $slider,
@@ -44,6 +45,9 @@ class HomeController extends Controller
         $this->beautyImage = $beautyImage;
     }
 
+    /**
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function getAllSlider()
     {
         $sliders = $this->slider
@@ -57,6 +61,9 @@ class HomeController extends Controller
         ]);
     }
 
+    /**
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function getAllTestimonial()
     {
         $testimonials = $this->testimonial
@@ -70,6 +77,9 @@ class HomeController extends Controller
         ]);
     }
 
+    /**
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function getAllBeautyImage()
     {
         $beautyImages = $this->beautyImage
