@@ -6,5 +6,5 @@ use Illuminate\Database\Eloquent\Model;
 
 class NotificationEmail extends Model
 {
-    //
+    protected $guarded = [];
 }
