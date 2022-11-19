@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Front;
 use App\Http\Controllers\Controller;
 use App\Models\ContactSetting;
 use App\Models\Message;
+use App\Models\NotificationEmail;
 use App\Traits\ResponseTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -25,16 +26,24 @@ class ContactUsController extends Controller
     private $message;
 
     /**
+     * @var NotificationEmail
+     */
+    private $notificationEmail;
+
+    /**
      * ContactUsController constructor.
      * @param ContactSetting $contactSetting
+     * @param NotificationEmail $notificationEmail
      * @param Message $message
      */
     public function __construct(
         ContactSetting $contactSetting,
+        NotificationEmail $notificationEmail,
         Message $message
     )
     {
         $this->contactSetting = $contactSetting;
+        $this->notificationEmail = $notificationEmail;
         $this->message = $message;
     }
 
@@ -78,6 +87,32 @@ class ContactUsController extends Controller
         return $this->responseJson([
             'success' => 1,
             'message' => 'Gửi tin nhắn thành công'
+        ]);
+    }
+
+    public function registerNotificationEmail(Request $request)
+    {
+        $data = $request->all();
+
+        DB::beginTransaction();
+        try {
+            $this->notificationEmail
+                ->create([
+                    'email' => $data['email']
+                ]);
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error($e->getMessage() . '. Line: ' . $e->getLine());
+            return $this->responseJson([
+                'success' => 0,
+                'message' => $e->getMessage()
+            ]);
+        }
+
+        return $this->responseJson([
+            'success' => 1,
+            'message' => 'Đăng ký thông báo thành công'
         ]);
     }
 }

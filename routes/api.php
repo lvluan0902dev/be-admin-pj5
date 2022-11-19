@@ -97,5 +97,6 @@ Route::namespace('Front')->group(function () {
         Route::get('get-all-staff', 'AboutUsController@getAllStaff');
         Route::get('get-all-contact-setting', 'ContactUsController@getAllContactSetting');
         Route::post('send-message', 'ContactUsController@sendMessage');
+        Route::post('register-notification-email', 'ContactUsController@registerNotificationEmail');
     });
 });
