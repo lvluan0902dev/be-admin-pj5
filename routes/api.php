@@ -86,6 +86,15 @@ Route::namespace('Admin')->group(function () {
             Route::put('edit', 'StaffController@edit');
             Route::delete('delete/{id}', 'StaffController@delete');
         });
+
+        // Product
+        Route::prefix('product')->group(function () {
+            Route::post('list', 'ProductController@list');
+            Route::post('add', 'ProductController@add');
+            Route::get('get/{id}', 'ProductController@get');
+            Route::put('edit', 'ProductController@edit');
+            Route::delete('delete/{id}', 'ProductController@delete');
+        });
     });
 });
 
