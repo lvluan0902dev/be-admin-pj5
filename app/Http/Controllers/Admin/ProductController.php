@@ -192,7 +192,7 @@ class ProductController extends Controller
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
-            // Delete old image if success
+            // Delete old image if not success
             if ($request->file('image')) {
                 $this->deleteImage($imageUpload['image_path']);
             }

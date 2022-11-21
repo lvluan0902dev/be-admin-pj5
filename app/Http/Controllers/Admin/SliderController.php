@@ -183,9 +183,9 @@ class SliderController extends Controller
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
-            // Delete old image if success
+            // Delete old image if not success
             if ($request->file('image')) {
-                $this->deleteImage($imagePathOld);
+                $this->deleteImage($imageUpload['image_path']);
             }
             Log::error($e->getMessage() . '. Line: ' . $e->getLine());
             return $this->responseJson([
