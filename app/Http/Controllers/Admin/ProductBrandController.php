@@ -212,4 +212,19 @@ class ProductBrandController extends Controller
             'message' => 'Xoá Thương hiệu sản phẩm thành công'
         ]);
     }
+
+    /**
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getAll()
+    {
+        $productBrands = $this->productBrand
+            ->orderBy('name', 'ASC')
+            ->get();
+
+        return $this->responseJson([
+            'success' => 1,
+            'data' => $productBrands
+        ]);
+    }
 }

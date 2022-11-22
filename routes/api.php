@@ -67,6 +67,7 @@ Route::namespace('Admin')->group(function () {
             Route::get('get/{id}', 'ProductCategoryController@get');
             Route::put('edit', 'ProductCategoryController@edit');
             Route::delete('delete/{id}', 'ProductCategoryController@delete');
+            Route::get('get-all', 'ProductCategoryController@getAll');
         });
 
         // Product Brand
@@ -76,6 +77,7 @@ Route::namespace('Admin')->group(function () {
             Route::get('get/{id}', 'ProductBrandController@get');
             Route::put('edit', 'ProductBrandController@edit');
             Route::delete('delete/{id}', 'ProductBrandController@delete');
+            Route::get('get-all', 'ProductBrandController@getAll');
         });
 
         // Staff

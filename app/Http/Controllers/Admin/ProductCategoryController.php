@@ -212,4 +212,19 @@ class ProductCategoryController extends Controller
             'message' => 'Xoá Danh mục sản phẩm thành công'
         ]);
     }
+
+    /**
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getAll()
+    {
+        $productCategories = $this->productCategory
+            ->orderBy('name', 'ASC')
+            ->get();
+
+        return $this->responseJson([
+            'success' => 1,
+            'data' => $productCategories
+        ]);
+    }
 }
