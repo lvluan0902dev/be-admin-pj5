@@ -46,7 +46,7 @@ class ProductController extends Controller
      */
     public function list(Request $request)
     {
-        $query = $this->product;
+        $query = $this->product->with(['product_category', 'product_brand']);
 
         $params = $request->all();
 
@@ -94,12 +94,12 @@ class ProductController extends Controller
                     'product_category_id' => $data['product_category_id'],
                     'product_brand_id' => $data['product_brand_id'],
                     'name' => $data['name'],
-                    'short_description' => $data['short_description'],
-                    'product_detail' => $data['product_detail'],
-                    'how_to_use' => $data['how_to_use'],
-                    'ingredients' => $data['ingredients'],
-                    'view_count' => $data['view_count'],
-                    'order_count' => $data['order_count'],
+                    'short_description' => $data['short_description'] ?? '',
+                    'product_detail' => $data['product_detail'] ?? '',
+                    'how_to_use' => $data['how_to_use'] ?? '',
+                    'ingredients' => $data['ingredients'] ?? '',
+                    'view_count' => 0,
+                    'order_count' => 0,
                     'image_name' => $imageUpload['image_name'],
                     'image_path' => $imageUpload['image_path'],
                     'status' => $data['status']
