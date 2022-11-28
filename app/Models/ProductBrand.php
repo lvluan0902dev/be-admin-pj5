@@ -6,5 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class ProductBrand extends Model
 {
+    /**
+     * @var array
+     */
     protected $guarded = [];
 }

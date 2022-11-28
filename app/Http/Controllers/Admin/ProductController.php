@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Product;
+use App\Models\ProductImage;
 use App\Repositories\BaseRepository;
 use App\Traits\ResponseTrait;
 use App\Traits\UploadImageTrait;
@@ -22,6 +23,11 @@ class ProductController extends Controller
     private $product;
 
     /**
+     * @var ProductImage
+     */
+    private $productImage;
+
+    /**
      * @var BaseRepository
      */
     private $baseRepository;
@@ -29,14 +35,17 @@ class ProductController extends Controller
     /**
      * ProductController constructor.
      * @param Product $product
+     * @param ProductImage $productImage
      * @param BaseRepository $baseRepository
      */
     public function __construct(
         Product $product,
+        ProductImage $productImage,
         BaseRepository $baseRepository
     )
     {
         $this->product = $product;
+        $this->productImage = $productImage;
         $this->baseRepository = $baseRepository;
     }
 
@@ -256,6 +265,40 @@ class ProductController extends Controller
         return $this->responseJson([
             'success' => 1,
             'message' => 'Xoá Sản phẩm thành công'
+        ]);
+    }
+
+    /**
+     * @param $id - product_id
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function uploadProductImage($id, Request $request)
+    {
+        $imageUpload = $this->uploadSingleImage($request, 'image', 'product-image', 'product-image', 540, 720);
+
+        DB::beginTransaction();
+        try {
+            $this->productImage
+                ->create([
+                    'product_id' => $id,
+                    'image_name' => $imageUpload['image_name'],
+                    'image_path' => $imageUpload['image_path']
+                ]);
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            $this->deleteImage($imageUpload['image_path']);
+            Log::error($e->getMessage() . '. Line: ' . $e->getLine());
+            return $this->responseJson([
+                'success' => 0,
+                'message' => $e->getMessage()
+            ]);
+        }
+
+        return $this->responseJson([
+            'success' => 1,
+            'message' => 'Thêm Hình ảnh sản phẩm thành công'
         ]);
     }
 }
