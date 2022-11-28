@@ -55,7 +55,7 @@ class ProductController extends Controller
         // Search
         if (isset($params['search']) && !empty($params['search'])) {
             $query = $query
-                ->where('title', 'LIKE', '%' . $params['search'] . '%');
+                ->where('name', 'LIKE', '%' . $params['search'] . '%');
         }
 
         // Sort
@@ -128,6 +128,7 @@ class ProductController extends Controller
     public function get($id)
     {
         $product = $this->product
+            ->with(['product_category', 'product_brand'])
             ->find($id);
 
         if (!$product) {
