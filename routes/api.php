@@ -98,6 +98,7 @@ Route::namespace('Admin')->group(function () {
                 Route::get('get/{id}', 'ProductController@get');
                 Route::put('edit', 'ProductController@edit');
                 Route::delete('delete/{id}', 'ProductController@delete');
+                Route::post('product-image-list/{id}', 'ProductController@productImageList');
             });
         });
     });

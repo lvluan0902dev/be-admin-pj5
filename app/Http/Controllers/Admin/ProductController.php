@@ -301,4 +301,35 @@ class ProductController extends Controller
             'message' => 'Thêm Hình ảnh sản phẩm thành công'
         ]);
     }
+
+    /**
+     * @param $id - product_id
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function productImageList($id, Request $request)
+    {
+        $query = $this->productImage
+        ->where('product_id', $id);
+
+        $params = $request->all();
+
+        $total = $query->count();
+
+        // Sort
+        $query = $this->baseRepository->sort($query, $params);
+
+        $totalResult = $query->count();
+
+        // Paginate
+        $result = $this->baseRepository->paginate($query, $params);
+
+        return $this->responseJson([
+            'data' => $result['data']->items(),
+            'total_result' => $totalResult,
+            'total' => $total,
+            'page' => $result['page'],
+            'last_page' => ceil($totalResult / $result['per_page'])
+        ]);
+    }
 }
