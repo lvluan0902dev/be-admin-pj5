@@ -102,7 +102,9 @@ Route::namespace('Admin')->group(function () {
                 Route::delete('product-image-delete/{id}', 'ProductController@productImageDelete');
                 Route::post('product-option-list/{id}', 'ProductController@productOptionList');
                 Route::post('product-option-add/{id}', 'ProductController@productOptionAdd');
+                Route::put('product-option-edit', 'ProductController@productOptionEdit');
                 Route::delete('product-option-delete/{id}', 'ProductController@productOptionDelete');
+                Route::get('product-option-get/{id}', 'ProductController@productOptionGet');
             });
         });
     });

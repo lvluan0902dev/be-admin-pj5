@@ -450,4 +450,110 @@ class ProductController extends Controller
             'message' => 'Thêm Thuộc tính sản phẩm thành công'
         ]);
     }
+
+    /**
+     * @param $id - product_option_id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function productOptionDelete($id)
+    {
+        $productOption = $this->productOption
+            ->find($id);
+
+        if (!$productOption) {
+            return $this->responseJson([
+                'success' => 0,
+                'message' => 'Thuộc tính sản phẩm không tồn tại hoặc đã bị xoá'
+            ]);
+        }
+
+        DB::beginTransaction();
+        try {
+            if ($productOption->delete()) {
+
+            } else {
+                return $this->responseJson([
+                    'success' => 0,
+                    'message' => 'Xoá Thuộc tính sản phẩm không thành công'
+                ]);
+            }
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error($e->getMessage() . '. Line: ' . $e->getLine());
+            return $this->responseJson([
+                'success' => 0,
+                'message' => $e->getMessage()
+            ]);
+        }
+
+        return $this->responseJson([
+            'success' => 1,
+            'message' => 'Thuộc tính sản phẩm sản phẩm thành công'
+        ]);
+    }
+
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function productOptionEdit(Request $request)
+    {
+        $data = $request->all();
+
+        $productOption = $this->productOption
+            ->find($data['id']);
+
+        if (!$productOption) {
+            return $this->responseJson([
+                'success' => 0,
+                'message' => 'Thuộc tính sản phẩm không tồn tại hoặc đã bị xoá'
+            ]);
+        }
+
+        DB::beginTransaction();
+        try {
+            $productOption
+                ->update([
+                    'name' => $data['name'],
+                    'price' => $data['price'],
+                    'stock' => $data['stock']
+                ]);
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error($e->getMessage() . '. Line: ' . $e->getLine());
+            return $this->responseJson([
+                'success' => 0,
+                'message' => $e->getMessage()
+            ]);
+        }
+
+        return $this->responseJson([
+            'success' => 1,
+            'message' => 'Sửa Thuộc tính sản phẩm thành công'
+        ]);
+    }
+
+    /**
+     * @param $id - product_option_id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function productOptionGet($id)
+    {
+        $productOption = $this->productOption
+            ->find($id);
+
+        if (!$productOption) {
+            return $this->responseJson([
+                'success' => 0,
+                'message' => 'Thuộc tính sản phẩm không tồn tại hoặc đã bị xoá'
+            ]);
+        }
+
+        return $this->responseJson([
+            'success' => 1,
+            'data' => $productOption
+        ]);
+    }
 }
