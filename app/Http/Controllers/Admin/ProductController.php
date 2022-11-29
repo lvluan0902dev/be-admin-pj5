@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Product;
 use App\Models\ProductImage;
+use App\Models\ProductOption;
 use App\Repositories\BaseRepository;
 use App\Traits\ResponseTrait;
 use App\Traits\UploadImageTrait;
@@ -28,6 +29,11 @@ class ProductController extends Controller
     private $productImage;
 
     /**
+     * @var ProductOption
+     */
+    private $productOption;
+
+    /**
      * @var BaseRepository
      */
     private $baseRepository;
@@ -36,16 +42,19 @@ class ProductController extends Controller
      * ProductController constructor.
      * @param Product $product
      * @param ProductImage $productImage
+     * @param ProductOption $productOption
      * @param BaseRepository $baseRepository
      */
     public function __construct(
         Product $product,
         ProductImage $productImage,
+        ProductOption $productOption,
         BaseRepository $baseRepository
     )
     {
         $this->product = $product;
         $this->productImage = $productImage;
+        $this->productOption = $productOption;
         $this->baseRepository = $baseRepository;
     }
 
@@ -310,7 +319,7 @@ class ProductController extends Controller
     public function productImageList($id, Request $request)
     {
         $query = $this->productImage
-        ->where('product_id', $id);
+            ->where('product_id', $id);
 
         $params = $request->all();
 
@@ -333,7 +342,10 @@ class ProductController extends Controller
         ]);
     }
 
-
+    /**
+     * @param $id - image_id
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function productImageDelete($id)
     {
         $productImage = $this->productImage
@@ -371,6 +383,71 @@ class ProductController extends Controller
         return $this->responseJson([
             'success' => 1,
             'message' => 'Xoá Hình ảnh sản phẩm thành công'
+        ]);
+    }
+
+    /**
+     * @param $id - product_id
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function productOptionList($id, Request $request)
+    {
+        $query = $this->productOption
+            ->where('product_id', $id);
+
+        $params = $request->all();
+
+        $total = $query->count();
+
+        // Sort
+        $query = $this->baseRepository->sort($query, $params);
+
+        $totalResult = $query->count();
+
+        // Paginate
+        $result = $this->baseRepository->paginate($query, $params);
+
+        return $this->responseJson([
+            'data' => $result['data']->items(),
+            'total_result' => $totalResult,
+            'total' => $total,
+            'page' => $result['page'],
+            'last_page' => ceil($totalResult / $result['per_page'])
+        ]);
+    }
+
+    /**
+     * @param $id - product_id
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function productOptionAdd($id, Request $request)
+    {
+        $data = $request->all();
+
+        DB::beginTransaction();
+        try {
+            $this->productOption
+                ->create([
+                    'product_id' => $id,
+                    'name' => $data['name'],
+                    'price' => $data['price'],
+                    'stock' => $data['stock']
+                ]);
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error($e->getMessage() . '. Line: ' . $e->getLine());
+            return $this->responseJson([
+                'success' => 0,
+                'message' => $e->getMessage()
+            ]);
+        }
+
+        return $this->responseJson([
+            'success' => 1,
+            'message' => 'Thêm Thuộc tính sản phẩm thành công'
         ]);
     }
 }
