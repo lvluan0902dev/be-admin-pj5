@@ -332,4 +332,45 @@ class ProductController extends Controller
             'last_page' => ceil($totalResult / $result['per_page'])
         ]);
     }
+
+
+    public function productImageDelete($id)
+    {
+        $productImage = $this->productImage
+            ->find($id);
+
+        if (!$productImage) {
+            return $this->responseJson([
+                'success' => 0,
+                'message' => 'Hình ảnh sản phẩm không tồn tại hoặc đã bị xoá'
+            ]);
+        }
+
+        $imagePath = $productImage->image_path;
+
+        DB::beginTransaction();
+        try {
+            if ($productImage->delete()) {
+                $this->deleteImage($imagePath);
+            } else {
+                return $this->responseJson([
+                    'success' => 0,
+                    'message' => 'Xoá Hình ảnh phẩm không thành công'
+                ]);
+            }
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error($e->getMessage() . '. Line: ' . $e->getLine());
+            return $this->responseJson([
+                'success' => 0,
+                'message' => $e->getMessage()
+            ]);
+        }
+
+        return $this->responseJson([
+            'success' => 1,
+            'message' => 'Xoá Hình ảnh sản phẩm thành công'
+        ]);
+    }
 }
