@@ -146,7 +146,7 @@ class ProductController extends Controller
     public function get($id)
     {
         $product = $this->product
-            ->with(['product_category', 'product_brand'])
+            ->with(['product_category', 'product_brand', 'product_options', 'product_images'])
             ->find($id);
 
         if (!$product) {

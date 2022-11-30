@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Product extends Model
 {
@@ -12,7 +14,7 @@ class Product extends Model
     protected $guarded = [];
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
     public function product_category()
     {
@@ -20,10 +22,26 @@ class Product extends Model
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
     public function product_brand()
     {
         return $this->belongsTo(ProductBrand::class, 'product_brand_id', 'id');
+    }
+
+    /**
+     * @return HasMany
+     */
+    public function product_images()
+    {
+        return $this->hasMany(ProductImage::class, 'product_id', 'id');
+    }
+
+    /**
+     * @return HasMany
+     */
+    public function product_options()
+    {
+        return $this->hasMany(ProductOption::class, 'product_id', 'id');
     }
 }
