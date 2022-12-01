@@ -120,5 +120,7 @@ Route::namespace('Front')->group(function () {
         Route::post('send-message', 'ContactUsController@sendMessage');
         Route::post('register-notification-email', 'ContactUsController@registerNotificationEmail');
         Route::get('get-all-faq', 'FaqController@getAllFaq');
+        Route::get('get-products-latest', 'HomeController@getProductsLatest');
+        Route::get('get-most-viewed-products', 'HomeController@getMostViewedProducts');
     });
 });

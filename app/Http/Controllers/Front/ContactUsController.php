@@ -7,6 +7,7 @@ use App\Models\ContactSetting;
 use App\Models\Message;
 use App\Models\NotificationEmail;
 use App\Traits\ResponseTrait;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -48,7 +49,7 @@ class ContactUsController extends Controller
     }
 
     /**
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function getAllContactSetting()
     {
@@ -62,6 +63,10 @@ class ContactUsController extends Controller
         ]);
     }
 
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     */
     public function sendMessage(Request $request)
     {
         $data = $request->all();
@@ -90,6 +95,10 @@ class ContactUsController extends Controller
         ]);
     }
 
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     */
     public function registerNotificationEmail(Request $request)
     {
         $data = $request->all();

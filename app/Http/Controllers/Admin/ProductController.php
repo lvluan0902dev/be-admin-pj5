@@ -12,6 +12,7 @@ use App\Traits\UploadImageTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 class ProductController extends Controller
 {
@@ -112,6 +113,7 @@ class ProductController extends Controller
                     'product_category_id' => $data['product_category_id'],
                     'product_brand_id' => $data['product_brand_id'],
                     'name' => $data['name'],
+                    'url' => Str::slug($data['name']) . '-' . Str::random(5),
                     'short_description' => $data['short_description'] ?? '',
                     'product_detail' => $data['product_detail'] ?? '',
                     'how_to_use' => $data['how_to_use'] ?? '',
@@ -200,6 +202,7 @@ class ProductController extends Controller
                     'product_category_id' => $data['product_category_id'],
                     'product_brand_id' => $data['product_brand_id'],
                     'name' => $data['name'],
+                    'url' => Str::slug($data['name']) . '-' . Str::random(5),
                     'short_description' => $data['short_description'],
                     'product_detail' => $data['product_detail'],
                     'how_to_use' => $data['how_to_use'],
