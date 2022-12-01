@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\ContactSetting;
 use App\Repositories\BaseRepository;
 use App\Traits\ResponseTrait;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -40,7 +41,7 @@ class ContactSettingController extends Controller
 
     /**
      * @param $title
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function get($title)
     {
@@ -63,7 +64,7 @@ class ContactSettingController extends Controller
 
     /**
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function edit(Request $request)
     {

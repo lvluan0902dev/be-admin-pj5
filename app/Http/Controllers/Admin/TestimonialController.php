@@ -7,6 +7,7 @@ use App\Models\Testimonial;
 use App\Repositories\BaseRepository;
 use App\Traits\ResponseTrait;
 use App\Traits\UploadImageTrait;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -42,7 +43,7 @@ class TestimonialController extends Controller
 
     /**
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function list(Request $request)
     {
@@ -78,7 +79,7 @@ class TestimonialController extends Controller
 
     /**
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function add(Request $request)
     {
@@ -117,7 +118,7 @@ class TestimonialController extends Controller
 
     /**
      * @param $id
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function get($id)
     {
@@ -139,7 +140,7 @@ class TestimonialController extends Controller
 
     /**
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function edit(Request $request)
     {
@@ -205,7 +206,7 @@ class TestimonialController extends Controller
 
     /**
      * @param $id
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function delete($id)
     {

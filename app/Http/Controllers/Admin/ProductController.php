@@ -9,6 +9,7 @@ use App\Models\ProductOption;
 use App\Repositories\BaseRepository;
 use App\Traits\ResponseTrait;
 use App\Traits\UploadImageTrait;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -61,7 +62,7 @@ class ProductController extends Controller
 
     /**
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function list(Request $request)
     {
@@ -96,7 +97,7 @@ class ProductController extends Controller
 
     /**
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function add(Request $request)
     {
@@ -143,7 +144,7 @@ class ProductController extends Controller
 
     /**
      * @param $id
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function get($id)
     {
@@ -166,7 +167,7 @@ class ProductController extends Controller
 
     /**
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function edit(Request $request)
     {
@@ -238,7 +239,7 @@ class ProductController extends Controller
 
     /**
      * @param $id
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function delete($id)
     {
@@ -283,7 +284,7 @@ class ProductController extends Controller
     /**
      * @param $id - product_id
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function uploadProductImage($id, Request $request)
     {
@@ -317,7 +318,7 @@ class ProductController extends Controller
     /**
      * @param $id - product_id
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function productImageList($id, Request $request)
     {
@@ -347,7 +348,7 @@ class ProductController extends Controller
 
     /**
      * @param $id - image_id
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function productImageDelete($id)
     {
@@ -392,7 +393,7 @@ class ProductController extends Controller
     /**
      * @param $id - product_id
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function productOptionList($id, Request $request)
     {
@@ -423,7 +424,7 @@ class ProductController extends Controller
     /**
      * @param $id - product_id
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function productOptionAdd($id, Request $request)
     {
@@ -456,7 +457,7 @@ class ProductController extends Controller
 
     /**
      * @param $id - product_option_id
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function productOptionDelete($id)
     {
@@ -498,7 +499,7 @@ class ProductController extends Controller
 
     /**
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function productOptionEdit(Request $request)
     {
@@ -540,7 +541,7 @@ class ProductController extends Controller
 
     /**
      * @param $id - product_option_id
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function productOptionGet($id)
     {
