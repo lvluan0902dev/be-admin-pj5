@@ -116,6 +116,17 @@ class ShopController extends Controller
                 ->where('name', 'LIKE', '%' . $params['search'] . '%');
         }
 
+        // Filter
+        if (isset($params['product_brand_id']) && !empty($params['product_brand_id']) && $params['product_brand_id'] != 0) {
+            $query = $query
+                ->where('product_brand_id', $params['product_brand_id']);
+        }
+        if (isset($params['product_category_id']) && !empty($params['product_category_id']) && $params['product_category_id'] != 0) {
+            $query = $query
+                ->where('product_category_id', $params['product_category_id']);
+        }
+
+
         // Sort
         $query = $this->baseRepository->sort($query, $params);
 
