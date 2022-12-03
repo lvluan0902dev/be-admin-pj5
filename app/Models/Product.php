@@ -14,6 +14,16 @@ class Product extends Model
     protected $guarded = [];
 
     /**
+     * ACTIVE STATUS
+     */
+    const ACTIVE_STATUS = 1;
+
+    /**
+     * INACTIVE STATUS
+     */
+    const INACTIVE_STATUS = 0;
+
+    /**
      * @return BelongsTo
      */
     public function product_category()

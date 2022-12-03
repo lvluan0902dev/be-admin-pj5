@@ -33,7 +33,7 @@ class FaqController extends Controller
      */
     public function getAllFaq() {
         $faqs = $this->faq
-            ->where('status', 1)
+            ->where('status', Faq::ACTIVE_STATUS)
             ->latest()
             ->get();
 

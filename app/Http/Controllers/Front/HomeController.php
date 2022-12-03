@@ -61,7 +61,7 @@ class HomeController extends Controller
     public function getAllSlider()
     {
         $sliders = $this->slider
-            ->where('status', 1)
+            ->where('status', Slider::ACTIVE_STATUS)
             ->latest()
             ->get();
 
@@ -77,7 +77,7 @@ class HomeController extends Controller
     public function getAllTestimonial()
     {
         $testimonials = $this->testimonial
-            ->where('status', 1)
+            ->where('status', Testimonial::ACTIVE_STATUS)
             ->latest()
             ->get();
 
@@ -93,7 +93,7 @@ class HomeController extends Controller
     public function getAllBeautyImage()
     {
         $beautyImages = $this->beautyImage
-            ->where('status', 1)
+            ->where('status', BeautyImage::ACTIVE_STATUS)
             ->latest()
             ->get();
 

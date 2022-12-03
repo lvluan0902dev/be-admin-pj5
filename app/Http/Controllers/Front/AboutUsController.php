@@ -32,7 +32,7 @@ class AboutUsController extends Controller
     public function getAllStaff()
     {
         $staff = $this->staff
-            ->where('status', 1)
+            ->where('status', Staff::ACTIVE_STATUS)
             ->latest()
             ->get();
 

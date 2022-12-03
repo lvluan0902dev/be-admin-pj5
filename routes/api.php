@@ -122,5 +122,8 @@ Route::namespace('Front')->group(function () {
         Route::get('get-all-faq', 'FaqController@getAllFaq');
         Route::get('get-products-latest', 'HomeController@getProductsLatest');
         Route::get('get-most-viewed-products', 'HomeController@getMostViewedProducts');
+        Route::get('get-all-product-category', 'ShopController@getAllProductCategory');
+        Route::get('get-all-product-brand', 'ShopController@getAllProductBrand');
+        Route::post('shop', 'ShopController@shop');
     });
 });

@@ -54,7 +54,7 @@ class ContactUsController extends Controller
     public function getAllContactSetting()
     {
         $contactSettings = $this->contactSetting
-            ->where('status', 1)
+            ->where('status', ContactSetting::ACTIVE_STATUS)
             ->get();
 
         return $this->responseJson([
