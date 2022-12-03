@@ -128,7 +128,12 @@ class ShopController extends Controller
 
 
         // Sort
-        $query = $this->baseRepository->sort($query, $params);
+        if (isset($params['sort_by_price_type']) && !empty($params['sort_by_price_type']) && $params['sort_by_price_type'] != 0) {
+            $sortType = $params['sort_by_price_type'] == 1 ? 'ASC' : 'DESC';
+            $query = $query->orderBy('option_price', $sortType);
+        } else {
+            $query = $this->baseRepository->sort($query, $params);
+        }
 
         $totalResult = $query->count();
 
