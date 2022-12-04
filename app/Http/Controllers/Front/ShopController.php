@@ -101,10 +101,15 @@ class ShopController extends Controller
         ]);
     }
 
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     */
     public function shop(Request $request)
     {
         $query = $this->product
-            ->with(['product_images', 'product_category', 'product_options']);
+            ->with(['product_images', 'product_category', 'product_options'])
+            ->where('status', Product::ACTIVE_STATUS);
 
         $params = $request->all();
 
@@ -146,6 +151,31 @@ class ShopController extends Controller
             'total' => $total,
             'page' => $result['page'],
             'last_page' => ceil($totalResult / $result['per_page'])
+        ]);
+    }
+
+    /**
+     * @param $url
+     * @return JsonResponse
+     */
+    public function getProduct($url)
+    {
+        $product = $this->product
+            ->with(['product_images', 'product_options', 'product_category', 'product_brand'])
+            ->where('url', $url)
+            ->where('status', Product::ACTIVE_STATUS)
+            ->first();
+
+        if (!$product) {
+            return $this->responseJson([
+                'success' => 0,
+                'message' => 'Sản phẩm không tồn tại hoặc đã bị xoá'
+            ]);
+        }
+
+        return $this->responseJson([
+            'success' => 1,
+            'data' => $product
         ]);
     }
 }

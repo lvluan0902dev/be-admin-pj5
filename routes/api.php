@@ -125,5 +125,6 @@ Route::namespace('Front')->group(function () {
         Route::get('get-all-product-category', 'ShopController@getAllProductCategory');
         Route::get('get-all-product-brand', 'ShopController@getAllProductBrand');
         Route::post('shop', 'ShopController@shop');
+        Route::get('get-product/{url}', 'ShopController@getProduct');
     });
 });
