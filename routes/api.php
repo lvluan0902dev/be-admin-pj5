@@ -106,6 +106,14 @@ Route::namespace('Admin')->group(function () {
                 Route::delete('product-option-delete/{id}', 'ProductController@productOptionDelete');
                 Route::get('product-option-get/{id}', 'ProductController@productOptionGet');
             });
+
+            // Contact Manage
+            Route::prefix('contact-manage')->group(function () {
+                Route::post('list-message', 'ContactManageController@listMessage');
+                Route::delete('delete-message/{id}', 'ContactManageController@deleteMessage');
+                Route::post('list-notification-email', 'ContactManageController@listNotificationEmail');
+                Route::delete('delete-notification-email/{id}', 'ContactManageController@deleteNotificationEmail');
+            });
         });
     });
 });
