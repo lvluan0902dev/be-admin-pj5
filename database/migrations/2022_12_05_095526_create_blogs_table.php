@@ -18,7 +18,9 @@ class CreateBlogsTable extends Migration
             $table->integer('blog_category_id');
             $table->string('title');
             $table->text('content');
-            $table->integer('view_count')->default(0);;
+            $table->integer('view_count')->default(0);
+            $table->string('image_name');
+            $table->string('image_path');
             $table->tinyInteger('status')->comment('0: Inactive, 1: Active');
             $table->timestamps();
         });
