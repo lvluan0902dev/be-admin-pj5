@@ -131,6 +131,7 @@ Route::namespace('Admin')->group(function () {
                 Route::get('get/{id}', 'BlogCategoryController@get');
                 Route::put('edit', 'BlogCategoryController@edit');
                 Route::delete('delete/{id}', 'BlogCategoryController@delete');
+                Route::get('get-all', 'BlogCategoryController@getAll');
             });
         });
     });

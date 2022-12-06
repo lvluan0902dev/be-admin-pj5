@@ -213,4 +213,19 @@ class BlogCategoryController extends Controller
             'message' => 'Xoá Danh mục bài viết thành công'
         ]);
     }
+
+    /**
+     * @return JsonResponse
+     */
+    public function getAll()
+    {
+        $blogCategories = $this->blogCategory
+            ->orderBy('name', 'ASC')
+            ->get();
+
+        return $this->responseJson([
+            'success' => 1,
+            'data' => $blogCategories
+        ]);
+    }
 }
