@@ -114,6 +114,24 @@ Route::namespace('Admin')->group(function () {
                 Route::post('list-notification-email', 'ContactManageController@listNotificationEmail');
                 Route::delete('delete-notification-email/{id}', 'ContactManageController@deleteNotificationEmail');
             });
+
+            // Blog
+            Route::prefix('blog')->group(function () {
+                Route::post('list', 'BlogController@list');
+                Route::post('add', 'BlogController@add');
+                Route::get('get/{id}', 'BlogController@get');
+                Route::put('edit', 'BlogController@edit');
+                Route::delete('delete/{id}', 'BlogController@delete');
+            });
+
+            // Blog Category
+            Route::prefix('blog-category')->group(function () {
+                Route::post('list', 'BlogCategoryController@list');
+                Route::post('add', 'BlogCategoryController@add');
+                Route::get('get/{id}', 'BlogCategoryController@get');
+                Route::put('edit', 'BlogCategoryController@edit');
+                Route::delete('delete/{id}', 'BlogCategoryController@delete');
+            });
         });
     });
 });
