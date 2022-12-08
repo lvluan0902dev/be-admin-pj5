@@ -161,7 +161,6 @@ class ShopController extends Controller
     public function getProduct($url)
     {
         $product = $this->product
-            ->with(['product_images', 'product_options', 'product_category', 'product_brand'])
             ->where('url', $url)
             ->where('status', Product::ACTIVE_STATUS)
             ->first();
@@ -172,6 +171,14 @@ class ShopController extends Controller
                 'message' => 'Sản phẩm không tồn tại hoặc đã bị xoá'
             ]);
         }
+
+        $product->update([
+            'view_count' => $product->view_count + 1
+        ]);
+
+        $product = $this->product
+            ->with(['product_images', 'product_options', 'product_category', 'product_brand'])
+            ->find($product->id);
 
         return $this->responseJson([
             'success' => 1,

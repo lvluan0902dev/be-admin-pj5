@@ -18,6 +18,7 @@ class CreateBlogsTable extends Migration
             $table->integer('blog_category_id');
             $table->string('title');
             $table->text('content');
+            $table->string('url');
             $table->integer('view_count')->default(0);
             $table->string('image_name');
             $table->string('image_path');

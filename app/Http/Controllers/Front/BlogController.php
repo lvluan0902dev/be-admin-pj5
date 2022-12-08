@@ -111,4 +111,36 @@ class BlogController extends Controller
             'last_page' => ceil($totalResult / $result['per_page'])
         ]);
     }
+
+    /**
+     * @param $url
+     * @return JsonResponse
+     */
+    public function getBlog($url)
+    {
+        $blog = $this->blog
+            ->where('url', $url)
+            ->where('status', Blog::ACTIVE_STATUS)
+            ->first();
+
+        if (!$blog) {
+            return $this->responseJson([
+                'success' => 0,
+                'message' => 'Bài viết không tồn tại hoặc đã bị xoá'
+            ]);
+        }
+
+        $blog->update([
+            'view_count' => $blog->view_count + 1
+        ]);
+
+        $blog = $this->blog
+            ->with(['blog_category'])
+            ->find($blog->id);
+
+        return $this->responseJson([
+            'success' => 1,
+            'data' => $blog
+        ]);
+    }
 }

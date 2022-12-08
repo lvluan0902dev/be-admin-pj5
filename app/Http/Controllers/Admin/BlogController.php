@@ -11,6 +11,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 class BlogController extends Controller
 {
@@ -94,6 +95,7 @@ class BlogController extends Controller
                 ->create([
                     'title' => $data['title'],
                     'content' => $data['content'],
+                    'url' => Str::slug($data['title']),
                     'image_name' => $imageUpload['image_name'],
                     'image_path' => $imageUpload['image_path'],
                     'blog_category_id' => $data['blog_category_id'],
@@ -178,6 +180,7 @@ class BlogController extends Controller
                     'content' => $data['content'],
                     'image_name' => $imageUpload['image_name'],
                     'image_path' => $imageUpload['image_path'],
+                    'url' => Str::slug($data['title']),
                     'blog_category_id' => $data['blog_category_id'],
                     'status' => $data['status']
                 ]);
