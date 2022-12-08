@@ -156,5 +156,6 @@ Route::namespace('Front')->group(function () {
         Route::get('get-all-blog-category', 'BlogController@getAllBlogCategory');
         Route::post('blog', 'BlogController@blog');
         Route::get('get-blog/{url}', 'BlogController@getBlog');
+        Route::get('get-some-blogs', 'HomeController@getSomeBlogs');
     });
 });

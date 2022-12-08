@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Front;
 
 use App\Http\Controllers\Controller;
 use App\Models\BeautyImage;
+use App\Models\Blog;
 use App\Models\Product;
 use App\Models\Slider;
 use App\Models\Testimonial;
@@ -36,23 +37,31 @@ class HomeController extends Controller
     private $product;
 
     /**
+     * @var Blog
+     */
+    private $blog;
+
+    /**
      * HomeController constructor.
      * @param Slider $slider
      * @param Testimonial $testimonial
      * @param BeautyImage $beautyImage
      * @param Product $product
+     * @param Blog $blog
      */
     public function __construct(
         Slider $slider,
         Testimonial $testimonial,
         BeautyImage $beautyImage,
-        Product $product
+        Product $product,
+        Blog $blog
     )
     {
         $this->slider = $slider;
         $this->testimonial = $testimonial;
         $this->beautyImage = $beautyImage;
         $this->product = $product;
+        $this->blog = $blog;
     }
 
     /**
@@ -136,6 +145,24 @@ class HomeController extends Controller
         return $this->responseJson([
             'success' => 1,
             'data' => $products
+        ]);
+    }
+
+    /**
+     * @return JsonResponse
+     */
+    public function getSomeBlogs()
+    {
+        $blogs = $this->blog
+            ->with(['blog_category'])
+            ->where('status', Blog::ACTIVE_STATUS)
+            ->latest()
+            ->take(5)
+            ->get();
+
+        return $this->responseJson([
+            'success' => 1,
+            'data' => $blogs
         ]);
     }
 }
