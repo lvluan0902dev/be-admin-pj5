@@ -157,5 +157,6 @@ Route::namespace('Front')->group(function () {
         Route::post('blog', 'BlogController@blog');
         Route::get('get-blog/{url}', 'BlogController@getBlog');
         Route::get('get-some-blogs', 'HomeController@getSomeBlogs');
+        Route::get('get-cart/{key?}', 'CartController@getCart');
     });
 });
