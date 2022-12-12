@@ -158,5 +158,9 @@ Route::namespace('Front')->group(function () {
         Route::get('get-blog/{url}', 'BlogController@getBlog');
         Route::get('get-some-blogs', 'HomeController@getSomeBlogs');
         Route::get('get-cart/{key?}', 'CartController@getCart');
+        Route::post('add-to-cart/{key?}', 'CartController@addToCart');
+        Route::delete('remove-item/{id}', 'CartController@removeItem');
+        Route::post('minus-item/{id}', 'CartController@minusItem');
+        Route::post('plus-item/{id}', 'CartController@plusItem');
     });
 });
