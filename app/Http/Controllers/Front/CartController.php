@@ -149,4 +149,28 @@ class CartController extends Controller
             'message' => 'Update quantity cart item success'
         ]);
     }
+
+    public function getCartTotalPrice($key = null)
+    {
+        $cartItems = $this->cartItem
+            ->where('key', $key)
+            ->get();
+
+        $totalPrice = 0;
+
+        if ($cartItems) {
+            foreach ($cartItems as $item) {
+                if ($item->product_option_id != null) {
+                    $totalPrice += $item->quantity * $item->product_option->price;
+                } else {
+                    $item->totalPrice = $item->quantity * $item->product->option_price;
+                }
+            }
+        }
+
+        return $this->responseJson([
+            'success' => 1,
+            'data' => $totalPrice
+        ]);
+    }
 }

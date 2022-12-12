@@ -162,5 +162,6 @@ Route::namespace('Front')->group(function () {
         Route::delete('remove-item/{id}', 'CartController@removeItem');
         Route::post('minus-item/{id}', 'CartController@minusItem');
         Route::post('plus-item/{id}', 'CartController@plusItem');
+        Route::get('get-cart-total-price/{key?}', 'CartController@getCartTotalPrice');
     });
 });
