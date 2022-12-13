@@ -153,6 +153,7 @@ class CartController extends Controller
     public function getCartTotalPrice($key = null)
     {
         $cartItems = $this->cartItem
+            ->with(['product', 'product_option'])
             ->where('key', $key)
             ->get();
 
@@ -163,7 +164,7 @@ class CartController extends Controller
                 if ($item->product_option_id != null) {
                     $totalPrice += $item->quantity * $item->product_option->price;
                 } else {
-                    $item->totalPrice = $item->quantity * $item->product->option_price;
+                    $totalPrice = $item->quantity * $item->product->option_price;
                 }
             }
         }
