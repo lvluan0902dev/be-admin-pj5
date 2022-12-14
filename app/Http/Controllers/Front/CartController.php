@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Front;
 
 use App\Http\Controllers\Controller;
 use App\Models\CartItem;
+use App\Models\Order;
+use App\Models\OrderItem;
 use App\Traits\ResponseTrait;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -18,14 +20,30 @@ class CartController extends Controller
     private $cartItem;
 
     /**
+     * @var Order
+     */
+    private $order;
+
+    /**
+     * @var OrderItem
+     */
+    private $orderItem;
+
+    /**
      * CartController constructor.
      * @param CartItem $cartItem
+     * @param Order $order
+     * @param OrderItem $orderItem
      */
     public function __construct(
-        CartItem $cartItem
+        CartItem $cartItem,
+        Order $order,
+        OrderItem $orderItem
     )
     {
         $this->cartItem = $cartItem;
+        $this->order = $order;
+        $this->orderItem = $orderItem;
     }
 
     /**
@@ -150,6 +168,10 @@ class CartController extends Controller
         ]);
     }
 
+    /**
+     * @param null $key
+     * @return JsonResponse
+     */
     public function getCartTotalPrice($key = null)
     {
         $cartItems = $this->cartItem
@@ -172,6 +194,69 @@ class CartController extends Controller
         return $this->responseJson([
             'success' => 1,
             'data' => $totalPrice
+        ]);
+    }
+
+    public function cartOrder(Request $request)
+    {
+        $data = $request->all();
+
+        if (empty($data['key'])) {
+            return $this->responseJson([
+                'success' => 1,
+                'message' => 'Key invalid'
+            ]);
+        }
+
+        $order = $this->order
+            ->create([
+                'full_name' => $data['full_name'],
+                'address' => $data['address'],
+                'phone_number' => $data['phone_number'],
+                'email' => $data['email']
+            ]);
+
+        $cartItems = $this->cartItem
+            ->with(['product', 'product_option'])
+            ->where('key', $data['key'])
+            ->get();
+
+        if (!empty($cartItems)) {
+            foreach ($cartItems as $item) {
+                if ($item->product_option_id != null) {
+                    $this->orderItem
+                        ->create([
+                            'order_id' => $order->id,
+                            'product_id' => $item->product_id,
+                            'product_option_id' => $item->product_option_id,
+                            'product_name' => $item->product->name,
+                            'option_name' => $item->product_option->name,
+                            'option_price' => $item->product_option->price,
+                            'quantity' => $item->quantity
+                        ]);
+                } else {
+                    $this->orderItem
+                        ->create([
+                            'order_id' => $order->id,
+                            'product_id' => $item->product_id,
+                            'product_option_id' => null,
+                            'product_name' => $item->product->name,
+                            'option_name' => $item->product->option_name,
+                            'option_price' => $item->product->option_price,
+                            'quantity' => $item->quantity
+                        ]);
+                }
+            }
+
+            $this->cartItem
+                ->with(['product', 'product_option'])
+                ->where('key', $data['key'])
+                ->delete();
+        }
+
+        return $this->responseJson([
+            'success' => 1,
+            'message' => 'Đặt hàng thành công'
         ]);
     }
 }
