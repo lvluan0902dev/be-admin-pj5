@@ -213,7 +213,8 @@ class CartController extends Controller
                 'full_name' => $data['full_name'],
                 'address' => $data['address'],
                 'phone_number' => $data['phone_number'],
-                'email' => $data['email']
+                'email' => $data['email'],
+                'status' => Order::NEW_STATUS
             ]);
 
         $cartItems = $this->cartItem

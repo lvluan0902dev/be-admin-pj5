@@ -13,6 +13,16 @@ class Order extends Model
     protected $guarded = [];
 
     /**
+     * NEW STATUS
+     */
+    const NEW_STATUS = 0;
+
+    /**
+     * DONE STATUS
+     */
+    const DONE_STATUS = 1;
+
+    /**
      * @return HasMany
      */
     public function orderItems()
