@@ -105,7 +105,7 @@ class ProductController extends Controller
 
         $data['status'] = $this->baseRepository->convertStatus($data['status']);
 
-        $imageUpload = $this->uploadSingleImage($request, 'image', 'product', 'product', 540, 720);
+        $imageUpload = $this->uploadSingleImage($request, 'image', 'product', 'product', 500, 500);
 
         DB::beginTransaction();
         try {
@@ -193,7 +193,7 @@ class ProductController extends Controller
         $imagePathOld = $product->image_path;
 
         if ($request->file('image')) {
-            $imageUpload = $this->uploadSingleImage($request, 'image', 'product', 'product', 540, 720);
+            $imageUpload = $this->uploadSingleImage($request, 'image', 'product', 'product', 500, 500);
         } else {
             $imageUpload['image_path'] = $product->image_path;
             $imageUpload['image_name'] = $product->image_name;
@@ -294,7 +294,7 @@ class ProductController extends Controller
      */
     public function uploadProductImage($id, Request $request)
     {
-        $imageUpload = $this->uploadSingleImage($request, 'image', 'product-image', 'product-image', 540, 720);
+        $imageUpload = $this->uploadSingleImage($request, 'image', 'product-image', 'product-image', 500, 500);
 
         DB::beginTransaction();
         try {
