@@ -18,9 +18,19 @@ class Order extends Model
     const NEW_STATUS = 0;
 
     /**
+     * TRANSPORT STATUS
+     */
+    const TRANSPORT_STATUS = 1;
+
+    /**
      * DONE STATUS
      */
-    const DONE_STATUS = 1;
+    const DONE_STATUS = 2;
+
+    /**
+     * CANCEL STATUS
+     */
+    const CANCEL_STATUS = 3;
 
     /**
      * @return HasMany

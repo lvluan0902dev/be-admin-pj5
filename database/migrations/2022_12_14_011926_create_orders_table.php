@@ -19,7 +19,7 @@ class CreateOrdersTable extends Migration
             $table->string('address');
             $table->string('phone_number');
             $table->string('email');
-            $table->tinyInteger('status')->comment('0: New, 1: Done');
+            $table->tinyInteger('status')->comment('0: New, 1: Transport, 2: Done, 3: Cancel');
             $table->timestamps();
         });
     }
