@@ -133,6 +133,12 @@ Route::namespace('Admin')->group(function () {
                 Route::delete('delete/{id}', 'BlogCategoryController@delete');
                 Route::get('get-all', 'BlogCategoryController@getAll');
             });
+
+            // Order
+            Route::prefix('order')->group(function () {
+                Route::post('list/{orderStatus}', 'OrderController@list');
+                Route::post('change-order-status/{id}/{orderStatus}', 'OrderController@changeOrderStatus');
+            });
         });
     });
 });
