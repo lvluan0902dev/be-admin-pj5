@@ -138,6 +138,9 @@ Route::namespace('Admin')->group(function () {
             Route::prefix('order')->group(function () {
                 Route::post('list/{orderStatus}', 'OrderController@list');
                 Route::post('change-order-status/{id}/{orderStatus}', 'OrderController@changeOrderStatus');
+                Route::post('order-details-list/{id}', 'OrderController@orderDetailsList');
+                Route::get('get-order-total-price/{id}', 'OrderController@getOrderTotalPrice');
+                Route::get('get-order-details/{id}', 'OrderController@getOrderDetails');
             });
         });
     });

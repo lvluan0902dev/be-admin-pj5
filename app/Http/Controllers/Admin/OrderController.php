@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Order;
+use App\Models\OrderItem;
 use App\Repositories\BaseRepository;
 use App\Traits\ResponseTrait;
 use Illuminate\Http\JsonResponse;
@@ -19,6 +20,11 @@ class OrderController extends Controller
     private $order;
 
     /**
+     * @var OrderItem
+     */
+    private $orderItem;
+
+    /**
      * @var BaseRepository
      */
     private $baseRepository;
@@ -26,14 +32,17 @@ class OrderController extends Controller
     /**
      * OrderController constructor.
      * @param Order $order
+     * @param OrderItem $orderItem
      * @param BaseRepository $baseRepository
      */
     public function __construct(
         Order $order,
+        OrderItem $orderItem,
         BaseRepository $baseRepository
     )
     {
         $this->order = $order;
+        $this->orderItem = $orderItem;
         $this->baseRepository = $baseRepository;
     }
 
@@ -109,6 +118,79 @@ class OrderController extends Controller
         return $this->responseJson([
             'success' => 1,
             'message' => 'Đổi trạng thái đơn hàng thành công'
+        ]);
+    }
+
+    /**
+     * @param $id - order id
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function orderDetailsList($id, Request $request)
+    {
+        $query = $this->orderItem
+            ->where('order_id', $id);
+
+        $params = $request->all();
+
+        $total = $query->count();
+
+        // Search
+        if (isset($params['search']) && !empty($params['search'])) {
+            // Nothing
+        }
+
+        // Sort
+        $query = $this->baseRepository->sort($query, $params);
+
+        $totalResult = $query->count();
+
+        // Paginate
+        $result = $this->baseRepository->paginate($query, $params);
+
+        return $this->responseJson([
+            'data' => $result['data']->items(),
+            'total_result' => $totalResult,
+            'total' => $total,
+            'page' => $result['page'],
+            'last_page' => ceil($totalResult / $result['per_page'])
+        ]);
+    }
+
+    /**
+     * @param $id - order id
+     * @return JsonResponse
+     */
+    public function getOrderTotalPrice($id)
+    {
+        $orderItems = $this->orderItem
+            ->where('order_id', $id)
+            ->get();
+
+        $totalPrice = 0;
+
+        foreach ($orderItems as $orderItem) {
+            $totalPrice += $orderItem->option_price * $orderItem->quantity;
+        }
+
+        return $this->responseJson([
+            'success' => 1,
+            'data' => $totalPrice
+        ]);
+    }
+
+    /**
+     * @param $id - order id
+     * @return JsonResponse
+     */
+    public function getOrderDetails($id)
+    {
+        $order = $this->order
+            ->find($id);
+
+        return $this->responseJson([
+            'success' => 1,
+            'data' => $order
         ]);
     }
 }
