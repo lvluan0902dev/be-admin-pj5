@@ -151,6 +151,7 @@ Route::namespace('Admin')->group(function () {
                 Route::get('get-message-count', 'DashboardController@getMessageCount');
                 Route::get('get-order-status-count/{orderStatus}', 'DashboardController@getOrderStatusCount');
                 Route::get('get-orders-latest', 'DashboardController@getOrdersLatest');
+                Route::get('get-products-latest', 'DashboardController@getProductsLatest');
             });
         });
     });

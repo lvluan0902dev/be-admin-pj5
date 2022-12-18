@@ -142,4 +142,21 @@ class DashboardController extends Controller
             'data' => $ordersLatest
         ]);
     }
+
+    /**
+     * @return JsonResponse
+     */
+    public function getProductsLatest()
+    {
+        $productsLatest = $this->product
+            ->with(['product_category'])
+            ->latest()
+            ->take(5)
+            ->get();
+
+        return $this->responseJson([
+            'success' => 1,
+            'data' => $productsLatest
+        ]);
+    }
 }
