@@ -142,6 +142,16 @@ Route::namespace('Admin')->group(function () {
                 Route::get('get-order-total-price/{id}', 'OrderController@getOrderTotalPrice');
                 Route::get('get-order-details/{id}', 'OrderController@getOrderDetails');
             });
+
+            // Dashboard
+            Route::prefix('dashboard')->group(function () {
+                Route::get('get-product-count', 'DashboardController@getProductCount');
+                Route::get('get-blog-count', 'DashboardController@getBlogCount');
+                Route::get('get-order-count', 'DashboardController@getOrderCount');
+                Route::get('get-message-count', 'DashboardController@getMessageCount');
+                Route::get('get-order-status-count/{orderStatus}', 'DashboardController@getOrderStatusCount');
+                Route::get('get-orders-latest', 'DashboardController@getOrdersLatest');
+            });
         });
     });
 });
