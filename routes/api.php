@@ -188,5 +188,6 @@ Route::namespace('Front')->group(function () {
         Route::post('plus-item/{id}', 'CartController@plusItem');
         Route::get('get-cart-total-price/{key?}', 'CartController@getCartTotalPrice');
         Route::post('cart-order', 'CartController@cartOrder');
+        Route::get('get-products-related/{id}', 'ShopController@getProductsRelated');
     });
 });

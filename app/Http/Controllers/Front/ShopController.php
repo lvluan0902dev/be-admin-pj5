@@ -185,4 +185,25 @@ class ShopController extends Controller
             'data' => $product
         ]);
     }
+
+    /**
+     * @param $id - product id
+     */
+    public function getProductsRelated($id)
+    {
+        $product = $this->product
+            ->find($id);
+
+        $productsRelated = $this->product
+            ->with(['product_category'])
+            ->where('product_category_id', $product->product_category_id)
+            ->orWhere('product_brand_id', $product->product_brand_id)
+            ->take(4)
+            ->get();
+
+        return $this->responseJson([
+            'success' => 1,
+            'data' => $productsRelated
+        ]);
+    }
 }
