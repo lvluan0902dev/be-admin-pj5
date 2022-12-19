@@ -37,18 +37,26 @@ class UserController extends Controller
     {
         $data = $request->all();
 
-        if (!Hash::check($data['current_password'], auth()->user()->getAuthPassword())) {
-            return $this->responseJson([
-                'success' => 0,
-                'message' => 'Mật khẩu hiện tại không chính xác'
-            ]);
+        if (!empty($data['current_password'])) {
+            if (!Hash::check($data['current_password'], auth()->user()->getAuthPassword())) {
+                return $this->responseJson([
+                    'success' => 0,
+                    'message' => 'Mật khẩu hiện tại không chính xác'
+                ]);
+            }
+
+            $this->user
+                ->find(auth()->id())
+                ->update([
+                    'name' => $data['name'],
+                    'password' => Hash::make($data['new_password'])
+                ]);
         }
 
         $this->user
             ->find(auth()->id())
             ->update([
                 'name' => $data['name'],
-                'password' => Hash::make($data['new_password'])
             ]);
 
         return $this->responseJson([
