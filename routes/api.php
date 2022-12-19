@@ -153,6 +153,10 @@ Route::namespace('Admin')->group(function () {
                 Route::get('get-orders-latest', 'DashboardController@getOrdersLatest');
                 Route::get('get-products-latest', 'DashboardController@getProductsLatest');
             });
+
+            Route::prefix('account')->group(function () {
+                Route::post('change-information', 'UserController@changeInformation');
+            });
         });
     });
 });
