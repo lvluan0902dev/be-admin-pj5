@@ -152,6 +152,7 @@ Route::namespace('Admin')->group(function () {
                 Route::get('get-order-status-count/{orderStatus}', 'DashboardController@getOrderStatusCount');
                 Route::get('get-orders-latest', 'DashboardController@getOrdersLatest');
                 Route::get('get-products-latest', 'DashboardController@getProductsLatest');
+                Route::get('get-products-most-viewed', 'DashboardController@getProductsMostViewed');
             });
 
             Route::prefix('account')->group(function () {

@@ -159,4 +159,21 @@ class DashboardController extends Controller
             'data' => $productsLatest
         ]);
     }
+
+    /**
+     * @return JsonResponse
+     */
+    public function getProductsMostViewed()
+    {
+        $productsMostViewed = $this->product
+            ->with(['product_category'])
+            ->orderBy('view_count', 'DESC')
+            ->take(5)
+            ->get();
+
+        return $this->responseJson([
+            'success' => 1,
+            'data' => $productsMostViewed
+        ]);
+    }
 }
