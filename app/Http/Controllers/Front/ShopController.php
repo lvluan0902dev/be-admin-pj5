@@ -189,10 +189,11 @@ class ShopController extends Controller
     /**
      * @param $id - product id
      */
-    public function getProductsRelated($id)
+    public function getProductsRelated($url)
     {
         $product = $this->product
-            ->find($id);
+            ->where('url', $url)
+            ->first();
 
         $productsRelated = $this->product
             ->with(['product_category'])
