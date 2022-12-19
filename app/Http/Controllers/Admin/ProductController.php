@@ -74,8 +74,15 @@ class ProductController extends Controller
 
         // Search
         if (isset($params['search']) && !empty($params['search'])) {
+            $param_search = $params['search'];
             $query = $query
-                ->where('name', 'LIKE', '%' . $params['search'] . '%');
+                ->where('name', 'LIKE', '%' . $param_search . '%')
+                ->orWhereHas('product_category', function ($query) use ($param_search) {
+                    $query->where('name', 'LIKE', '%' . $param_search . '%');
+                })
+                ->orWhereHas('product_brand', function ($query) use ($param_search) {
+                    $query->where('name', 'LIKE', '%' . $param_search . '%');
+                });
         }
 
         // Sort
