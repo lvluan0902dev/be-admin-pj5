@@ -141,6 +141,7 @@ Route::namespace('Admin')->group(function () {
                 Route::post('order-details-list/{id}', 'OrderController@orderDetailsList');
                 Route::get('get-order-total-price/{id}', 'OrderController@getOrderTotalPrice');
                 Route::get('get-order-details/{id}', 'OrderController@getOrderDetails');
+                Route::get('get-data-for-export-excel/{orderStatus}', 'OrderController@getDataForExportExcel');
             });
 
             // Dashboard

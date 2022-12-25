@@ -7,6 +7,7 @@ use App\Models\Order;
 use App\Models\OrderItem;
 use App\Repositories\BaseRepository;
 use App\Traits\ResponseTrait;
+use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -191,6 +192,34 @@ class OrderController extends Controller
         return $this->responseJson([
             'success' => 1,
             'data' => $order
+        ]);
+    }
+
+    /**
+     * @param $orderStatus
+     * @return JsonResponse
+     */
+    public function getDataForExportExcel($orderStatus)
+    {
+        $ordersStock = $this->order
+            ->where('status', $orderStatus)
+            ->latest()
+            ->get();
+
+        $orders = array();
+        foreach ($ordersStock as $order) {
+            $obj = new \stdClass();
+            $obj->name = $order->full_name;
+            $obj->address = $order->address;
+            $obj->phone_number = $order->phone_number;
+            $obj->email = $order->email;
+            $obj->date_time = Carbon::createFromFormat('Y-m-d H:i:s', $order->created_at)->format('d-m-Y H:i:s');
+            $orders[] = $obj;
+        }
+
+        return $this->responseJson([
+            'success' => 1,
+            'data' => $orders
         ]);
     }
 }
