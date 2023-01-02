@@ -272,7 +272,7 @@ class CartController extends Controller
         $user = $this->user->find(1);
 
         // Send email to customer
-        Mail::send('email.order_new', array('order' => $order, 'user' => $user, 'orderItem' => $cartItems, 'totalPrice' => $totalPrice), function ($message) use ($order) {
+        Mail::send('email.order_new', array('order' => $order, 'user' => $user, 'cartItems' => $cartItems, 'totalPrice' => $totalPrice), function ($message) use ($order) {
             $message->to($order->email, 'Customer')->subject('Bạn có một đơn hàng mới');
         });
 
