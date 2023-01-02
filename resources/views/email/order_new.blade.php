@@ -72,7 +72,7 @@
                                                target="_blank">
                                                                 <span
                                                                     style="color:#4aabf7;font-family:Helvetica;font-size:14px;line-height:22px">VNBeauty</span></a><span
-                                                style="color:#222222;font-family:Helvetica;font-size:14px;line-height:22px">.Bạn có thể liên hệ với người bán qua email: <a
+                                                style="color:#222222;font-family:Helvetica;font-size:14px;line-height:22px">. Bạn có thể liên hệ với người bán qua email: <a
                                                     href="mailto:{{ $user->email }}"
                                                     target="_blank">{{ $user->email }}</a>.</span><br>
                                             <br>
@@ -122,7 +122,7 @@
                                                 </td>
                                             </tr>
 
-                                            @foreach($cartItems as $item)
+                                            @foreach($orderItems as $item)
                                                 <tr>
                                                     <td style="padding-bottom:16px">
                                                     <span style="font-weight:bold;">
@@ -136,7 +136,7 @@
 
                                             <tr>
                                                 <td><span style="font-weight:bold">Tổng</span></td>
-                                                <td align="right">{{ number_format($totalPrice) }}đ</td>
+                                                <td align="right">{{ number_format($totalPrice + 30000) }}đ</td>
                                             </tr>
                                             </tbody>
                                         </table>
