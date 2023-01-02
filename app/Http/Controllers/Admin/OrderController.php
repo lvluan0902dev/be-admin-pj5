@@ -5,11 +5,13 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Order;
 use App\Models\OrderItem;
+use App\Models\User;
 use App\Repositories\BaseRepository;
 use App\Traits\ResponseTrait;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 
 class OrderController extends Controller
 {
@@ -31,20 +33,28 @@ class OrderController extends Controller
     private $baseRepository;
 
     /**
+     * @var User
+     */
+    private $user;
+
+    /**
      * OrderController constructor.
      * @param Order $order
      * @param OrderItem $orderItem
      * @param BaseRepository $baseRepository
+     * @param User $user
      */
     public function __construct(
         Order $order,
         OrderItem $orderItem,
-        BaseRepository $baseRepository
+        BaseRepository $baseRepository,
+        User $user
     )
     {
         $this->order = $order;
         $this->orderItem = $orderItem;
         $this->baseRepository = $baseRepository;
+        $this->user = $user;
     }
 
     /**
@@ -115,6 +125,37 @@ class OrderController extends Controller
         $order->update([
             'status' => $orderStatus
         ]);
+
+        $user = $this->user->find(1);
+
+        $orderItems = $order->orderItems;
+
+        $totalPrice = 0;
+
+        foreach ($orderItems as $item) {
+            $totalPrice += $item->option_price * $item->quantity;
+        }
+
+        if ($orderStatus == Order::TRANSPORT_STATUS) {
+            // Send email to customer
+            Mail::send('email.order_transport', array('order' => $order, 'user' => $user, 'orderItems' => $orderItems, 'totalPrice' => $totalPrice), function ($message) use ($order) {
+                $message->to($order->email, 'Customer')->subject('Đơn hàng của bạn đang được vận chuyển');
+            });
+        }
+
+        if ($orderStatus == Order::DONE_STATUS) {
+            // Send email to customer
+            Mail::send('email.order_done', array('order' => $order, 'user' => $user, 'orderItems' => $orderItems, 'totalPrice' => $totalPrice), function ($message) use ($order) {
+                $message->to($order->email, 'Customer')->subject('Đơn hàng của bạn đã hoàn thành, cảm ơn bạn đã đặt hàng');
+            });
+        }
+
+        if ($orderStatus == Order::CANCEL_STATUS) {
+            // Send email to customer
+            Mail::send('email.order_cancel', array('order' => $order, 'user' => $user, 'orderItems' => $orderItems, 'totalPrice' => $totalPrice), function ($message) use ($order) {
+                $message->to($order->email, 'Customer')->subject('Đơn hàng của bạn đã huỷ');
+            });
+        }
 
         return $this->responseJson([
             'success' => 1,

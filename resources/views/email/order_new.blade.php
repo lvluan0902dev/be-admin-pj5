@@ -43,7 +43,7 @@
                                             <tbody>
                                             <tr>
                                                 <td>
-                                                    <span style="font-size:24px">Bạn có đơn hàng mới!</span>
+                                                    <span style="font-size:24px">Bạn có một đơn hàng mới!</span>
                                                 </td>
                                                 <td align="right">
                                                                         <span
