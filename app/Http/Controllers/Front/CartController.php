@@ -6,9 +6,11 @@ use App\Http\Controllers\Controller;
 use App\Models\CartItem;
 use App\Models\Order;
 use App\Models\OrderItem;
+use App\Models\User;
 use App\Traits\ResponseTrait;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 
 class CartController extends Controller
 {
@@ -30,20 +32,28 @@ class CartController extends Controller
     private $orderItem;
 
     /**
+     * @var User
+     */
+    private $user;
+
+    /**
      * CartController constructor.
      * @param CartItem $cartItem
      * @param Order $order
      * @param OrderItem $orderItem
+     * @param User $user
      */
     public function __construct(
         CartItem $cartItem,
         Order $order,
-        OrderItem $orderItem
+        OrderItem $orderItem,
+        User $user
     )
     {
         $this->cartItem = $cartItem;
         $this->order = $order;
         $this->orderItem = $orderItem;
+        $this->user = $user;
     }
 
     /**
@@ -222,9 +232,12 @@ class CartController extends Controller
             ->where('key', $data['key'])
             ->get();
 
+        $totalPrice = 0;
+
         if (!empty($cartItems)) {
             foreach ($cartItems as $item) {
                 if ($item->product_option_id != null) {
+                    $totalPrice += $item->product_option->price * $item->quantity;
                     $this->orderItem
                         ->create([
                             'order_id' => $order->id,
@@ -236,6 +249,7 @@ class CartController extends Controller
                             'quantity' => $item->quantity
                         ]);
                 } else {
+                    $totalPrice += $item->product->option_price * $item->quantity;
                     $this->orderItem
                         ->create([
                             'order_id' => $order->id,
@@ -254,6 +268,13 @@ class CartController extends Controller
                 ->where('key', $data['key'])
                 ->delete();
         }
+
+        $user = $this->user->find(1);
+
+        // Send email to customer
+        Mail::send('email.order_new', array('order' => $order, 'user' => $user, 'cartItem' => $cartItems, 'totalPrice' => $totalPrice), function ($message) use ($order) {
+            $message->to($order->email, 'Customer')->subject('Bạn có một đơn hàng mới');
+        });
 
         return $this->responseJson([
             'success' => 1,
