@@ -59,6 +59,7 @@ class CartController extends Controller
     /**
      * @param null $key
      * @return JsonResponse
+     * @deprecated
      */
     public function getCart($key = null)
     {
