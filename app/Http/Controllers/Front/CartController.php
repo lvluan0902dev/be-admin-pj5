@@ -196,7 +196,7 @@ class CartController extends Controller
                 if ($item->product_option_id != null) {
                     $totalPrice += $item->quantity * $item->product_option->price;
                 } else {
-                    $totalPrice = $item->quantity * $item->product->option_price;
+                    $totalPrice += $item->quantity * $item->product->option_price;
                 }
             }
         }
@@ -207,6 +207,10 @@ class CartController extends Controller
         ]);
     }
 
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     */
     public function cartOrder(Request $request)
     {
         $data = $request->all();
@@ -281,6 +285,20 @@ class CartController extends Controller
         return $this->responseJson([
             'success' => 1,
             'message' => 'Đặt hàng thành công'
+        ]);
+    }
+
+    public function changeQuantity($id, Request $request) {
+        $data = $request->all();
+        $cartItem = $this->cartItem->find($id);
+
+        $cartItem->update([
+            'quantity' => $data['quantity']
+        ]);
+
+        return $this->responseJson([
+            'success' => 1,
+            'message' => 'Update quantity cart item success'
         ]);
     }
 }

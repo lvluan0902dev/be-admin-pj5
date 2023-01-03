@@ -191,5 +191,6 @@ Route::namespace('Front')->group(function () {
         Route::get('get-cart-total-price/{key?}', 'CartController@getCartTotalPrice');
         Route::post('cart-order', 'CartController@cartOrder');
         Route::get('get-products-related/{url}', 'ShopController@getProductsRelated');
+        Route::post('change-quantity/{id}', 'CartController@changeQuantity');
     });
 });
