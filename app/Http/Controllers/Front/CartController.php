@@ -89,6 +89,7 @@ class CartController extends Controller
      * @param $key
      * @param Request $request
      * @return JsonResponse
+     * @deprecated
      */
     public function addToCart($key, Request $request)
     {
@@ -123,6 +124,7 @@ class CartController extends Controller
     /**
      * @param $id - item id
      * @return JsonResponse
+     * @deprecated
      */
     public function removeItem($id)
     {
@@ -140,6 +142,7 @@ class CartController extends Controller
      * @param $id
      * @param Request $request
      * @return JsonResponse
+     * @deprecated
      */
     public function minusItem($id, Request $request)
     {
@@ -163,6 +166,7 @@ class CartController extends Controller
      * @param $id
      * @param Request $request
      * @return JsonResponse
+     * @deprecated
      */
     public function plusItem($id, Request $request)
     {
@@ -181,6 +185,7 @@ class CartController extends Controller
     /**
      * @param null $key
      * @return JsonResponse
+     * @deprecated
      */
     public function getCartTotalPrice($key = null)
     {
@@ -215,13 +220,6 @@ class CartController extends Controller
     {
         $data = $request->all();
 
-        if (empty($data['key'])) {
-            return $this->responseJson([
-                'success' => 1,
-                'message' => 'Key invalid'
-            ]);
-        }
-
         $order = $this->order
             ->create([
                 'full_name' => $data['full_name'],
@@ -231,46 +229,26 @@ class CartController extends Controller
                 'status' => Order::NEW_STATUS
             ]);
 
-        $cartItems = $this->cartItem
-            ->with(['product', 'product_option'])
-            ->where('key', $data['key'])
-            ->get();
+        $cartItems = $data['cart'];
+
+//        return $this->responseJson(['data' => $cartItems]);
 
         $totalPrice = 0;
 
         if (!empty($cartItems)) {
             foreach ($cartItems as $item) {
-                if ($item->product_option_id != null) {
-                    $totalPrice += $item->product_option->price * $item->quantity;
-                    $this->orderItem
-                        ->create([
-                            'order_id' => $order->id,
-                            'product_id' => $item->product_id,
-                            'product_option_id' => $item->product_option_id,
-                            'product_name' => $item->product->name,
-                            'option_name' => $item->product_option->name,
-                            'option_price' => $item->product_option->price,
-                            'quantity' => $item->quantity
-                        ]);
-                } else {
-                    $totalPrice += $item->product->option_price * $item->quantity;
-                    $this->orderItem
-                        ->create([
-                            'order_id' => $order->id,
-                            'product_id' => $item->product_id,
-                            'product_option_id' => null,
-                            'product_name' => $item->product->name,
-                            'option_name' => $item->product->option_name,
-                            'option_price' => $item->product->option_price,
-                            'quantity' => $item->quantity
-                        ]);
-                }
+                $totalPrice += $item['option_price'] * $item['quantity'];
+                $this->orderItem
+                    ->create([
+                        'order_id' => $order->id,
+                        'product_id' => $item['product_id'],
+                        'product_option_id' => $item['product_option_id'],
+                        'product_name' => $item['product_name'],
+                        'option_name' => $item['option_name'],
+                        'option_price' => $item['option_price'],
+                        'quantity' => $item['quantity']
+                    ]);
             }
-
-            $this->cartItem
-                ->with(['product', 'product_option'])
-                ->where('key', $data['key'])
-                ->delete();
         }
 
         $user = $this->user->find(1);
@@ -288,7 +266,14 @@ class CartController extends Controller
         ]);
     }
 
-    public function changeQuantity($id, Request $request) {
+    /**
+     * @param $id
+     * @param Request $request
+     * @return JsonResponse
+     * @deprecated
+     */
+    public function changeQuantity($id, Request $request)
+    {
         $data = $request->all();
         $cartItem = $this->cartItem->find($id);
 
